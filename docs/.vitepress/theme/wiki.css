@@ -74,15 +74,19 @@ a:hover {
 
 .wiki-shell {
   position: relative;
+  display: grid;
+  grid-template-columns: var(--wiki-panel-width) minmax(0, 1fr);
+  grid-template-areas:
+    'panel head'
+    'panel tabs'
+    'panel content';
+  align-content: start;
 }
 
 /* ------------------------------------------------------------ 左侧导航面板 */
 
 .wiki-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--wiki-panel-width);
+  grid-area: panel;
   padding-top: 1em;
   font-size: 0.75em;
   line-height: 1.5;
@@ -265,7 +269,7 @@ a:hover {
 /* ------------------------------------------------------------ 顶部个人工具 */
 
 .wiki-head {
-  margin-left: var(--wiki-panel-width);
+  grid-area: head;
   height: 1.5em;
   padding: 0 1.5em;
   font-size: 0.75em;
@@ -301,7 +305,7 @@ a:hover {
 /* -------------------------------------------------------------------- 标签页 */
 
 .wiki-tabs {
-  margin-left: var(--wiki-panel-width);
+  grid-area: tabs;
   padding: 0 1.5em;
   height: 2.5em;
   position: relative;
@@ -368,7 +372,8 @@ a:hover {
 /* ------------------------------------------------------------------ 内容区 */
 
 .wiki-content-wrap {
-  margin-left: var(--wiki-panel-width);
+  grid-area: content;
+  min-width: 0;
   padding-right: 0;
   position: relative;
   z-index: 1;
@@ -777,9 +782,16 @@ a:hover {
 /* ------------------------------------------------------------------ 响应式 */
 
 @media (max-width: 62em) {
+  .wiki-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'panel'
+      'head'
+      'tabs'
+      'content';
+  }
+
   .wiki-panel {
-    position: static;
-    width: auto;
     padding: 0.75em 1em 0;
     font-size: 0.8125em;
   }
@@ -790,12 +802,6 @@ a:hover {
 
   .wiki-search {
     max-width: 24em;
-  }
-
-  .wiki-head,
-  .wiki-tabs,
-  .wiki-content-wrap {
-    margin-left: 0;
   }
 
   .wiki-head {

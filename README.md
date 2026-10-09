@@ -19,6 +19,8 @@ npm run preview    # 本地预览构建产物
 
 > `npm install` 后若 esbuild 报错，是 npm 拦截了 postinstall 脚本，执行 `npm install-scripts approve esbuild` 后重装即可。
 
+> **`npm run preview` 需要重启才生效**：它在启动时会缓存一次文件清单，重新 `build` 后资源哈希变了，旧的服务进程会 404（页面变成无样式的裸 HTML）。改完内容重新构建后，请重启 preview，或者日常直接用 `npm run dev`。
+
 ---
 
 ## 先做这一件事：填仓库地址
@@ -106,6 +108,8 @@ git add -A && git commit -m "更新第三世代" && git push
 | 成立时间 | 2021 年 |
 :::
 ```
+
+**中文标点可以放心写在加粗里面**。标准的 CommonMark 有个坑：`**注意：**请勿…`、`**第一世代（草创期）**是…` 这类写法会因为 `**` 左边紧挨全角标点而导致加粗失效、星号原样显示。本项目通过 `docs/.vitepress/markdown-cjk.ts` 在解析前把非 ASCII 标点临时换成私用区字符、解析后再换回来，已经把这个问题修掉了，按中文习惯正常写即可。
 
 每个页面的 frontmatter：
 

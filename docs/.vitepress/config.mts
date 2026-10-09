@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import container from 'markdown-it-container'
+import { cjkPunctPlugin } from './markdown-cjk'
 
 /* ============================================================================
  *  YJlab 实验室维基 —— 站点配置
@@ -93,6 +94,9 @@ export default defineConfig({
       }
       box('ambox', 'wiki-ambox')
       box('infobox', 'wiki-infobox')
+
+      // 修复「中文标点紧挨 `**` 导致加粗失效」的 CommonMark 兼容问题
+      md.use(cjkPunctPlugin)
     },
   },
 
