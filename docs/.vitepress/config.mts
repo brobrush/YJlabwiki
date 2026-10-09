@@ -28,7 +28,7 @@ const SIDEBAR = [
     title: '世代编年史',
     items: [
       { text: '总览', link: '/chronicle/' },
-      { text: '第一世代 · 草创', link: '/chronicle/gen-1' },
+      { text: '第一世代 · 猴王初问世', link: '/chronicle/gen-1' },
       { text: '第二世代 · 成形', link: '/chronicle/gen-2' },
       { text: '第三世代 · 当下', link: '/chronicle/gen-3' },
       { text: '大事记', link: '/chronicle/timeline' },
