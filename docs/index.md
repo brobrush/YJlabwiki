@@ -58,4 +58,4 @@ categories:
 ## 姊妹项目
 
 - [实验室主页](https://example.org)（待绑定域名后替换）
-- [代码仓库](https://github.com/YOUR-ORG/yjlab-wiki)（同上）
+- [代码仓库](https://github.com/brobrush/YJlabwiki)（同上）

@@ -33,7 +33,7 @@ categories:
 ## 账号与权限申请
 
 ::: ambox 申请流程
-1. 在 [Issues](https://github.com/YOUR-ORG/yjlab-wiki/issues/new) 提一条申请，注明用途与需要的时长
+1. 在 [Issues](https://github.com/brobrush/YJlabwiki/issues/new) 提一条申请，注明用途与需要的时长
 2. 由实验平台组负责人审批
 3. 开通后由申请人自行修改初始密码
 :::

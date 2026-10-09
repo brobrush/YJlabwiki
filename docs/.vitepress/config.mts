@@ -13,13 +13,13 @@ import { cjkPunctPlugin } from './markdown-cjk'
 const REPO = {
   label: 'GitHub',
   // 「编辑」标签：打开网页版 Markdown 编辑器，改完 commit，站点自动重建
-  editBase: 'https://github.com/YOUR-ORG/yjlab-wiki/edit/main/docs/',
+  editBase: 'https://github.com/brobrush/YJlabwiki/edit/main/docs/',
   // 「查看历史」标签：该页面的提交记录
-  historyBase: 'https://github.com/YOUR-ORG/yjlab-wiki/commits/main/docs/',
+  historyBase: 'https://github.com/brobrush/YJlabwiki/commits/main/docs/',
   // 「讨论」标签：新建 issue
-  discussBase: 'https://github.com/YOUR-ORG/yjlab-wiki/issues/new',
+  discussBase: 'https://github.com/brobrush/YJlabwiki/issues/new',
   // 侧栏「最近更改」：整个仓库的提交历史
-  recentChanges: 'https://github.com/YOUR-ORG/yjlab-wiki/commits/main',
+  recentChanges: 'https://github.com/brobrush/YJlabwiki/commits/main',
 }
 
 /* 侧栏两大分类。link 用文件路径（不带 .md），text 是显示名。 */
