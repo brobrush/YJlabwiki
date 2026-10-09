@@ -1,6 +1,6 @@
 node_modules/
-docs/.vitepress/dist/
-docs/.vitepress/cache/
+**/.vitepress/dist/
+**/.vitepress/cache/
 docs/public/search-index.json
 .DS_Store
 *.log
