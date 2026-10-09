@@ -23,21 +23,25 @@ npm run preview    # 本地预览构建产物
 
 ---
 
-## 先做这一件事：填仓库地址
+## 仓库绑定状态
 
-打开 `docs/.vitepress/config.mts`，把顶部的 `REPO` 换成你的真实仓库：
+站点已绑定到 **[brobrush/YJlabwiki](https://github.com/brobrush/YJlabwiki)**（私有仓库，默认分支 `main`），`docs/.vitepress/config.mts` 顶部的 `REPO` 已配置好：
 
 ```ts
 const REPO = {
   label: 'GitHub',
-  editBase: 'https://github.com/你的组织/yjlab-wiki/edit/main/docs/',
-  historyBase: 'https://github.com/你的组织/yjlab-wiki/commits/main/docs/',
-  discussBase: 'https://github.com/你的组织/yjlab-wiki/issues/new',
-  recentChanges: 'https://github.com/你的组织/yjlab-wiki/commits/main',
+  editBase: 'https://github.com/brobrush/YJlabwiki/edit/main/docs/',
+  historyBase: 'https://github.com/brobrush/YJlabwiki/commits/main/docs/',
+  discussBase: 'https://github.com/brobrush/YJlabwiki/issues/new',
+  recentChanges: 'https://github.com/brobrush/YJlabwiki/commits/main',
 }
 ```
 
-填之前，页面上的「编辑」「查看历史」会显示成**红链**（维基百科里表示"页面不存在"的样式）并跳到编辑指南；填之后就会正常跳转到网页编辑器。
+如果以后要把仓库改名或迁移到别的账号，改这四行即可，其余地方不用动。
+
+> ⚠️ **仓库是私有的**，所以「编辑」标签只对**已加入协作者的人**有效。普通访客（未登录 GitHub 或没有权限）点「编辑」会看到 GitHub 的 404 页面。想让任何人都能提交修改，需要把仓库改成公开 —— 那样外部读者可以走 fork + Pull Request 的流程。
+
+> 判断逻辑：`Layout.vue` 里会检查 `editBase` 是否还含占位符 `YOUR-ORG`。含则「编辑」「查看历史」渲染成**红链**（维基里"页面不存在"的样式）并跳到编辑指南，同时在正文顶部显示一条提醒；不含则一切正常。所以迁移时只要把 `YOUR-ORG` 换掉，提示会自动消失。
 
 ---
 
