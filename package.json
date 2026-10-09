@@ -1,0 +1,17 @@
+{
+  "name": "yjlab-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "YJlab 实验室维基 —— 维基百科风格静态站",
+  "scripts": {
+    "index": "node scripts/build-search-index.mjs",
+    "dev": "npm run index && vitepress dev docs",
+    "build": "npm run index && vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "markdown-it-container": "^4.0.0",
+    "vitepress": "^1.6.4"
+  }
+}

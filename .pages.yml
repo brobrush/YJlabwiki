@@ -1,0 +1,89 @@
+# Pages CMS 配置 —— https://pagescms.org
+#
+# 作用：给不熟悉 Markdown / Git 的组员一个表单式的编辑后台。
+# 用法（一次性设置，约 3 分钟）：
+#   1. 把本仓库推到 GitHub
+#   2. 用仓库管理员账号登录 https://app.pagescms.org
+#   3. 选择本仓库并授权 GitHub App
+#   4. 之后打开 app.pagescms.org 就能看到「世代编年史 / 组别」两个栏目，直接填写保存
+#
+# 保存即提交，站点会自动重建。无需任何服务器。
+
+media:
+  - name: images
+    label: 图片
+    input: docs/public/images
+    output: /images
+
+content:
+  - name: chronicle
+    label: 世代编年史
+    type: collection
+    path: docs/chronicle
+    filename: '{fields.slug}.md'
+    view:
+      fields: [title, order]
+    fields:
+      - name: title
+        label: 页面标题
+        type: string
+        required: true
+      - name: slug
+        label: 文件名（英文短横线，如 gen-4）
+        type: string
+        required: true
+      - name: categories
+        label: 分类
+        type: select
+        list: true
+        options:
+          values:
+            - 世代编年史
+      - name: body
+        label: 正文
+        type: rich-text
+
+  - name: groups
+    label: 组别
+    type: collection
+    path: docs/groups
+    filename: '{fields.slug}.md'
+    view:
+      fields: [title]
+    fields:
+      - name: title
+        label: 页面标题
+        type: string
+        required: true
+      - name: slug
+        label: 文件名（英文短横线，如 vision）
+        type: string
+        required: true
+      - name: categories
+        label: 分类
+        type: select
+        list: true
+        options:
+          values:
+            - 组别
+      - name: body
+        label: 正文
+        type: rich-text
+
+  - name: help
+    label: 帮助页面
+    type: collection
+    path: docs/help
+    filename: '{fields.slug}.md'
+    fields:
+      - name: title
+        label: 页面标题
+        type: string
+        required: true
+      - name: slug
+        label: 文件名（英文短横线）
+        type: string
+        required: true
+      - name: body
+        label: 正文
+        type: rich-text

@@ -1,0 +1,9 @@
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+docs/public/search-index.json
+.DS_Store
+*.log
+
+# 本地截图/临时文件
+.preview/
