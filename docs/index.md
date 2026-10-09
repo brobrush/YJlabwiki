@@ -55,7 +55,9 @@ categories:
 - 想练习语法可以随便改[沙盒](/sandbox)页面
 - 发现错误直接在页面里改，不要犹豫：**维基不怕改错，怕没人改**
 
-## 姊妹项目
+## 延伸
 
-- [实验室主页](https://example.org)（待绑定域名后替换）
-- [代码仓库](https://github.com/brobrush/YJlabwiki)（同上）
+- [所有页面](/all-pages) —— 站内全部条目一览
+- [关于本站](/about) —— 定位、内容边界与维护者
+- [代码仓库](https://github.com/brobrush/YJlabwiki) —— 本站源文件都在这里，编辑记录也在
+- 实验室主页 —— 待绑定域名后补充

@@ -70,7 +70,10 @@ function toPlainText(md) {
     .trim()
 }
 
-const files = (await walk(DOCS)).sort()
+const files = (await walk(DOCS))
+  // docs/404.md 是「找不到页面」的兜底页，不属于正文，不进检索索引
+  .filter((f) => basename(f) !== '404.md')
+  .sort()
 const index = []
 
 for (const file of files) {

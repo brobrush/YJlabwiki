@@ -12,6 +12,8 @@ import { cjkPunctPlugin } from './markdown-cjk'
 
 const REPO = {
   label: 'GitHub',
+  // 仓库首页
+  home: 'https://github.com/brobrush/YJlabwiki',
   // 「编辑」标签：打开网页版 Markdown 编辑器，改完 commit，站点自动重建
   editBase: 'https://github.com/brobrush/YJlabwiki/edit/main/docs/',
   // 「查看历史」标签：该页面的提交记录
@@ -107,19 +109,25 @@ export default defineConfig({
       tagline: '实验室维基',
       nav: [
         { text: '首页', link: '/' },
+        { text: '所有页面', link: '/all-pages' },
         { text: '编辑指南', link: '/help/' },
+        { text: '关于本站', link: '/about' },
         { text: '沙盒', link: '/sandbox' },
       ],
       categories: SIDEBAR,
       tools: [
         { text: '最近更改', link: REPO.recentChanges, external: true },
+        { text: '所有页面', link: '/all-pages' },
         { text: '随机条目', random: true },
       ],
       /* 右上角「个人工具」栏 */
       personal: [
         { text: '编辑指南', link: '/help/' },
-        { text: '管理员入口', link: REPO.editBase.replace(/\/edit\/.*$/, ''), external: true },
+        { text: '所有页面', link: '/all-pages' },
+        { text: '仓库', link: REPO.home, external: true },
       ],
+      /* 右上角最后一个入口：静态站没有自己的登录，点它去 GitHub 登录后才能编辑 */
+      login: { text: '登录 GitHub', link: 'https://github.com/login' },
       edit: {
         label: REPO.label,
         editBase: REPO.editBase,
