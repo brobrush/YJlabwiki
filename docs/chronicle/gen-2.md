@@ -1,5 +1,5 @@
 ---
-title: 第二世代 · 成形
+title: 第二世代 · shit ocean
 categories:
   - 世代编年史
 ---
@@ -17,7 +17,7 @@ categories:
 | 主要方向 | 待补充 |
 | 代表成果 | 待补充 |
 | 上一世代 | [第一世代 · 猴王初问世](/chronicle/gen-1) |
-| 下一世代 | [第三世代 · 当下](/chronicle/gen-3) |
+| 下一世代 | [第三世代 · 注定伟大](/chronicle/gen-3) |
 :::
 
 ## 概览
