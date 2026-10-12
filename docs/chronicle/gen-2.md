@@ -9,7 +9,7 @@ categories:
 
 **第二世代（成形期）**是 YJlab 研究方向收敛、工作流程固化的阶段。
 
-::: infobox 第二世代 · 成形
+::: infobox 第二世代 · shit ocean
 | 项目 | 内容 |
 | --- | --- |
 | 起止时间 | 待补充 |
@@ -46,4 +46,4 @@ categories:
 ## 相关条目
 
 - [第一世代 · 猴王初问世](/chronicle/gen-1)
-- [第三世代 · 当下](/chronicle/gen-3)
+- [第三世代 · 注定伟大](/chronicle/gen-3)
