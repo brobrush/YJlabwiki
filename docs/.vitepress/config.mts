@@ -7,7 +7,7 @@ import { cjkPunctPlugin } from './markdown-cjk'
  *
  *  日常只需要改两处：
  *    1) REPO —— 仓库地址（决定「编辑」「查看历史」「讨论」标签跳到哪）
- *    2) SIDEBAR —— 侧栏「世代编年史 / 组别」两大分类的条目
+ *    2) SIDEBAR —— 侧栏三大分类（世代编年史 / 组别 / 工具介绍）的条目
  * ==========================================================================*/
 
 /* 站点部署在子路径下时用环境变量覆盖，例如 GitHub Pages 项目站点：
@@ -33,7 +33,7 @@ const REPO = {
   recentChanges: 'https://github.com/brobrush/YJlabwiki/commits/main',
 }
 
-/* 侧栏两大分类。link 用文件路径（不带 .md），text 是显示名。 */
+/* 侧栏三大分类。link 用文件路径（不带 .md），text 是显示名。 */
 const SIDEBAR = [
   {
     title: '世代编年史',
@@ -55,6 +55,14 @@ const SIDEBAR = [
       { text: 'AI组', link: '/groups/ai' },
       { text: '（前）VR组', link: '/groups/vr' },
       { text: '（前）web组', link: '/groups/web' },
+    ],
+  },
+  {
+    title: '工具介绍',
+    items: [
+      { text: '总览', link: '/tools/' },
+      // 每新增一件工具，在这里加一行：
+      // { text: '工具名', link: '/tools/英文文件名' },
     ],
   },
 ]

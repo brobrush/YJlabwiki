@@ -189,7 +189,7 @@ const loginText = computed<string>(() => cfg.value.login?.text ?? '登录 GitHub
         </ul>
       </nav>
 
-      <!-- ▼ 两大分类：世代编年史 / 组别 ▼ -->
+      <!-- ▼ 三大分类：世代编年史 / 组别 / 工具介绍（由 config.mts 的 SIDEBAR 驱动）▼ -->
       <nav
         v-for="cat in categories"
         :key="cat.title"
@@ -210,7 +210,7 @@ const loginText = computed<string>(() => cfg.value.login?.text ?? '登录 GitHub
 
       <!-- 工具 -->
       <nav v-if="toolItems.length" class="wiki-portal wiki-portal--tools">
-        <h3 class="wiki-portal__title">工具</h3>
+        <h3 class="wiki-portal__title">本站工具</h3>
         <ul>
           <li v-for="item in toolItems" :key="item.text">
             <a

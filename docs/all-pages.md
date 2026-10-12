@@ -25,6 +25,7 @@ const SECTIONS = {
   '': '首页与其他',
   chronicle: '世代编年史',
   groups: '组别',
+  tools: '工具介绍',
   help: '帮助',
 }
 
@@ -38,7 +39,7 @@ const groups = computed(() => {
     if (!map.has(seg)) map.set(seg, [])
     map.get(seg).push(p)
   }
-  const order = ['', 'chronicle', 'groups', 'help']
+  const order = ['', 'chronicle', 'groups', 'tools', 'help']
   const rank = (k) => (order.indexOf(k) === -1 ? order.length : order.indexOf(k))
   return [...map.entries()]
     .sort((a, b) => rank(a[0]) - rank(b[0]))

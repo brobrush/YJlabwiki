@@ -129,7 +129,7 @@ git add -A && git commit -m "更新第三世代人员" && git push
 
 - 文件名用**英文或拼音**，短横线分隔，例如 `gen-1.md`、`algorithm.md`
 - 页面标题写在 frontmatter 的 `title` 字段里，用中文
-- `categories` 只能填侧栏里的两大分类：`世代编年史`、`组别`
+- `categories` 只能填侧栏里的三大分类：`世代编年史`、`组别`、`工具介绍`
 - 每新增一个页面，记得在 `docs/.vitepress/config.mts` 的 `SIDEBAR` 里加上链接，否则它不会出现在侧栏
 
 ## 图片与附件
