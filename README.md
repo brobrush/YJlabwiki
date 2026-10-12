@@ -106,7 +106,7 @@ git add -A && git commit -m "更新第三世代" && git push
 这一节还缺少 2023 年之后的信息。
 :::
 
-::: infobox 算法组
+::: infobox ROS组
 | 项目 | 内容 |
 | --- | --- |
 | 成立时间 | 2021 年 |

@@ -49,10 +49,12 @@ const SIDEBAR = [
     title: '组别',
     items: [
       { text: '总览', link: '/groups/' },
-      { text: '算法组', link: '/groups/algorithm' },
-      { text: '硬件组', link: '/groups/hardware' },
-      { text: '实验平台组', link: '/groups/platform' },
-      { text: '论文与成果组', link: '/groups/publication' },
+      { text: 'ROS组', link: '/groups/ros' },
+      { text: '嵌入式组', link: '/groups/embedded' },
+      { text: '建模组', link: '/groups/modeling' },
+      { text: 'AI组', link: '/groups/ai' },
+      { text: '（前）VR组', link: '/groups/vr' },
+      { text: '（前）web组', link: '/groups/web' },
     ],
   },
 ]

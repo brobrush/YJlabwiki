@@ -35,10 +35,11 @@ categories:
 :::
 
 - **[组别总览](/groups/)** —— 组织结构与分工一览
-- [算法组](/groups/algorithm)
-- [硬件组](/groups/hardware)
-- [实验平台组](/groups/platform)
-- [论文与成果组](/groups/publication)
+- [ROS组](/groups/ros)
+- [嵌入式组](/groups/embedded)
+- [建模组](/groups/modeling)
+- [AI组](/groups/ai)
+- [（前）VR组](/groups/vr) · [（前）web组](/groups/web) —— 已解散，存档条目
 
 ## 精选条目
 
@@ -47,7 +48,7 @@ categories:
 :::
 
 - **[第一世代 · 猴王初问世](/chronicle/gen-1)** —— 实验室从一间办公室、两台机器开始的那几年
-- **[算法组](/groups/algorithm)** —— 目前承担项目最多的组别
+- **[ROS组](/groups/ros)** —— 目前承担项目最多的组别
 
 ## 参与编辑
 
