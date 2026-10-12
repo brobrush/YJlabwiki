@@ -5,9 +5,10 @@ import { cjkPunctPlugin } from './markdown-cjk'
 /* ============================================================================
  *  YJlab 实验室维基 —— 站点配置
  *
- *  日常只需要改两处：
+ *  日常只需要改几处：
  *    1) REPO —— 仓库地址（决定「编辑」「查看历史」「讨论」标签跳到哪）
  *    2) SIDEBAR —— 侧栏三大分类（世代编年史 / 组别 / 工具介绍）的条目
+ *    3）STEINS GATE —— 一切都是命运石之门的选择
  * ==========================================================================*/
 
 /* 站点部署在子路径下时用环境变量覆盖，例如 GitHub Pages 项目站点：
@@ -40,8 +41,8 @@ const SIDEBAR = [
     items: [
       { text: '总览', link: '/chronicle/' },
       { text: '第一世代 · 猴王初问世', link: '/chronicle/gen-1' },
-      { text: '第二世代 · 成形', link: '/chronicle/gen-2' },
-      { text: '第三世代 · 当下', link: '/chronicle/gen-3' },
+      { text: '第二世代 · shit ocean', link: '/chronicle/gen-2' },
+      { text: '第三世代 · 注定伟大', link: '/chronicle/gen-3' },
       { text: '大事记', link: '/chronicle/timeline' },
     ],
   },
@@ -146,7 +147,7 @@ export default defineConfig({
         { text: '所有页面', link: '/all-pages' },
         { text: '仓库', link: REPO.home, external: true },
       ],
-      /* 右上角最后一个入口：静态站没有自己的登录，点它去 GitHub 登录后才能编辑 */
+      /* 右上角最后一个入口：点它去 GitHub 登录后才能编辑 */
       login: { text: '登录 GitHub', link: 'https://github.com/login' },
       edit: {
         label: REPO.label,
