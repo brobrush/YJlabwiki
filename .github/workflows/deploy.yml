@@ -1,0 +1,65 @@
+name: 部署到 GitHub Pages
+
+# 任何时候有人往 main 提交（包括在网页上点「编辑」改完 Markdown 后提交），
+# 这个工作流就会重新构建并发布站点。通常 1 分钟内生效。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # 也可以在 Actions 页面手动触发
+
+# GitHub Pages 部署需要的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个部署，避免并发互相覆盖
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+        with:
+          # 必须完整历史：页脚的「本页面最后修订于」是靠 git 提交时间算的
+          fetch-depth: 0
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci --no-audit --no-fund
+
+      - name: 构建站点
+        run: npm run build
+        env:
+          # 项目站点跑在 https://brobrush.github.io/YJlabwiki/ 这个子路径下，
+          # 所有链接和资源都要带这个前缀。将来绑定了独立域名就删掉这一行。
+          BASE_PATH: /YJlabwiki/
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4
