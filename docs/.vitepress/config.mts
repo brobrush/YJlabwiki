@@ -10,6 +10,15 @@ import { cjkPunctPlugin } from './markdown-cjk'
  *    2) SIDEBAR —— 侧栏「世代编年史 / 组别」两大分类的条目
  * ==========================================================================*/
 
+/* 站点部署在子路径下时用环境变量覆盖，例如 GitHub Pages 项目站点：
+ *     BASE_PATH=/YJlabwiki/ npm run build
+ * 绑定独立域名、跑在根路径时不需要设置（默认就是 /）。
+ */
+const BASE_PATH = (() => {
+  const raw = process.env.BASE_PATH ?? '/'
+  return raw.endsWith('/') ? raw : raw + '/'
+})()
+
 const REPO = {
   label: 'GitHub',
   // 仓库首页
@@ -52,12 +61,13 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'YJlab',
   description: 'YJlab 实验室维基 —— 世代编年史与组别档案',
-  base: process.env.BASE_PATH ?? '/',
+  base: BASE_PATH,
   cleanUrls: true,
   lastUpdated: true,
   appearance: false, // 维基百科没有夜间模式，关掉切换按钮
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    // 注意：head 里的资源路径不会自动加 base 前缀，必须手动拼
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE_PATH}favicon.svg` }],
     ['meta', { name: 'theme-color', content: '#f6f6f6' }],
   ],
 

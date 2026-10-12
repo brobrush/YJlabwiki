@@ -131,17 +131,45 @@ categories:
 
 ## 部署
 
-### Cloudflare Pages（推荐，免费）
+### GitHub Pages（当前使用中）
 
-1. 仓库推到 GitHub
-2. [dash.cloudflare.com](https://dash.cloudflare.com/) → Workers & Pages → Create → Pages → 连接 Git 仓库
-3. 构建命令 `npm run build`，输出目录 `docs/.vitepress/dist`
-4. 保存后拿到 `xxx.pages.dev`，**此时已经可以正常使用**
-5. 买了域名后 → Custom domains → 填 `wiki.你的域名.com` → 按提示加一条 CNAME，完成
+**线上地址：https://brobrush.github.io/YJlabwiki/**
 
-### Vercel / Netlify
+已经配置好了，不需要再做任何操作。机制：
 
-同上：构建命令 `npm run build`，输出目录 `docs/.vitepress/dist`。
+| 环节 | 说明 |
+| --- | --- |
+| 触发 | 往 `main` 分支提交（包括在网页上点「编辑」改完 Markdown 后提交） |
+| 工作流 | [.github/workflows/deploy.yml](.github/workflows/deploy.yml) |
+| 构建 | `npm ci` → `npm run build`（带 `BASE_PATH=/YJlabwiki/`） |
+| 产物 | `docs/.vitepress/dist`，通过 `upload-pages-artifact` + `deploy-pages` 发布 |
+| 生效时间 | 通常 1 分钟内 |
+| 查看进度 | https://github.com/brobrush/YJlabwiki/actions |
+
+也可以在 Actions 页面手动点 **Run workflow** 强制重新部署。
+
+::: warning 两个必须知道的限制
+1. **站点对全网公开**，无法加登录。GitHub Pages 的「私有发布」（访问控制）是 GitHub Enterprise Cloud 专属功能；免费/Pro/Team 套餐下，**即使仓库是私有的，站点也公开在互联网上**。所以这个 wiki 里不要写人员手机号、未公开评审意见、合作方保密材料等。
+2. **免费套餐只支持公开仓库**。当初在私有仓库上启用 Pages 会直接报 `Your current plan does not support GitHub Pages for this repository.`，所以本仓库已转为**公开**。
+:::
+
+### 换成独立域名
+
+买了域名之后：
+
+1. DNS 加一条 CNAME：`wiki.你的域名.com` → `brobrush.github.io`
+2. 仓库 Settings → Pages → Custom domain 填入该域名，勾选 Enforce HTTPS
+3. **删掉 workflow 里的 `BASE_PATH: /YJlabwiki/`** —— 绑定域名后站点跑在根路径，不再需要前缀
+4. 提交，等一次自动部署
+
+### Cloudflare Pages / Vercel / Netlify
+
+产物就是纯静态文件，换托管商随时可以：
+
+- 构建命令 `npm run build`，输出目录 `docs/.vitepress/dist`
+- 跑在根路径时不要设置 `BASE_PATH`
+
+> Cloudflare Pages 相比 GitHub Pages 唯一实质性的优势：可以接 **Cloudflare Access**（免费版 50 人以内）给站点套一层邮箱登录，做到"未登录连 HTML 都拿不到"。如果以后 wiki 里要放不能公开的内容，就换过去。
 
 ### 自己的服务器（Nginx）
 
