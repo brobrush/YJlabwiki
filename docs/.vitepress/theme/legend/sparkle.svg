@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" width="100" height="100">
+  <!-- 闪光星：缩放 + 明暗闪烁 -->
+  <g>
+    <animateTransform attributeName="transform" type="scale"
+                      values="0.55;1;0.55" dur="1.4s" repeatCount="indefinite"
+                      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <path d="M0,-46 C3,-14 14,-3 46,0 C14,3 3,14 0,46 C-3,14 -14,3 -46,0 C-14,-3 -3,-14 0,-46 Z"
+          fill="#fffbe0"/>
+    <path d="M0,-46 C3,-14 14,-3 46,0 C14,3 3,14 0,46 C-3,14 -14,3 -46,0 C-14,-3 -3,-14 0,-46 Z"
+          fill="none" stroke="#ffb300" stroke-width="3"/>
+    <animate attributeName="opacity" values="1;0.35;1" dur="1.4s" repeatCount="indefinite"/>
+  </g>
+</svg>

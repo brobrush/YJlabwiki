@@ -172,8 +172,11 @@ html[data-wiki-theme='legend'] .wiki-logo__mark .wiki-logo__red {
 }
 
 html[data-wiki-theme='legend'] .wiki-logo__tagline {
-  color: var(--lg-gold-dim);
+  /* 背后是旋转光芒，暗金色会糊掉，所以提亮并加硬投影把字抠出来 */
+  color: var(--lg-gold-bright);
   letter-spacing: 0.2em;
+  text-shadow: 0 0 4px #000, 1px 1px 0 #3d0000, -1px -1px 0 #3d0000,
+    1px -1px 0 #3d0000, -1px 1px 0 #3d0000;
 }
 
 html[data-wiki-theme='legend'] .wiki-logo__tagline::before {
@@ -564,6 +567,143 @@ html[data-wiki-theme='legend'] .wiki-body img {
   box-shadow: 0 0 16px rgba(255, 190, 0, 0.4);
 }
 
+/* ============================================================ 贴图素材
+ *
+ * 图片放在同目录的 legend/ 下，用相对路径引用 ——
+ * Vite 会自动处理成带 base 前缀的资源，所以部署到
+ * /YJlabwiki/ 这种子路径下也不会 404（用绝对路径 /legend/... 就会）。
+ *
+ * 素材来源与授权：
+ *   legend/wings-*.png  —— 「Angel Wings Effect」by Cethiel
+ *                           https://opengameart.org/content/angel-wings-effect
+ *                           License: CC0（公有领域，无需署名，这里标注是出于礼貌）
+ *                           本仓库把 5 帧原图合成了 APNG 动画并居中补齐尺寸
+ *   legend/burst.svg    —— 本仓库自绘（放射光芒）
+ *   legend/sparkle.svg  —— 本仓库自绘（闪光星）
+ * ==========================================================================*/
+
+/* 侧栏字标：背后挂一对会闪的大翅膀，再后面是旋转光芒 */
+html[data-wiki-theme='legend'] .wiki-logo {
+  position: relative;
+  isolation: isolate;
+}
+
+html[data-wiki-theme='legend'] .wiki-logo::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 17em;
+  height: 7em;
+  transform: translate(-50%, -50%);
+  background: url('./legend/wings-gold.png') center / contain no-repeat;
+  z-index: -1;
+  animation: lg-wingflash 1.1s steps(1, end) infinite;
+  pointer-events: none;
+}
+
+html[data-wiki-theme='legend'] .wiki-logo::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -2.5em;
+  width: 15em;
+  height: 15em;
+  transform: translateX(-50%);
+  background: url('./legend/burst.svg') center / contain no-repeat;
+  /* 光芒只是背景气氛，压暗一点，否则金色的翅膀会糊在里面分不清 */
+  opacity: 0.38;
+  z-index: -2;
+  animation: lg-spin 9s linear infinite;
+  pointer-events: none;
+}
+
+/* 内容框右上角挂一颗闪光星 */
+html[data-wiki-theme='legend'] .wiki-content {
+  position: relative;
+}
+
+html[data-wiki-theme='legend'] .wiki-content::after {
+  content: '';
+  position: absolute;
+  right: 1.2em;
+  top: 0.6em;
+  width: 2.6em;
+  height: 2.6em;
+  background: url('./legend/sparkle.svg') center / contain no-repeat;
+  pointer-events: none;
+  animation: lg-twinkle 2.3s ease-in-out infinite;
+}
+
+/* 首页横幅两侧各挂一只小翅膀，右边镜像翻转。
+ * 横幅本身是红底金框，所以这里用红色翅膀才亮得出来（金色会糊在红底上） */
+html[data-wiki-theme='legend'] .wiki-banner {
+  position: relative;
+  overflow: hidden;
+}
+
+html[data-wiki-theme='legend'] .wiki-banner::before,
+html[data-wiki-theme='legend'] .wiki-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -0.4em;
+  width: 12em;
+  height: 5em;
+  background: url('./legend/wings-red.png') center / contain no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+  animation: lg-wingflash 1.4s steps(1, end) infinite;
+}
+
+html[data-wiki-theme='legend'] .wiki-banner::before {
+  left: 0.5em;
+}
+
+html[data-wiki-theme='legend'] .wiki-banner::after {
+  right: 0.5em;
+  transform: scaleX(-1);
+}
+
+/* 信息框标题条背后透一层光芒 */
+html[data-wiki-theme='legend'] .wiki-infobox__label {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+html[data-wiki-theme='legend'] .wiki-infobox__label::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8em;
+  height: 8em;
+  margin: -4em 0 0 -4em;
+  background: url('./legend/burst.svg') center / contain no-repeat;
+  opacity: 0.75;
+  z-index: -1;
+  animation: lg-spin-centered 7s linear infinite reverse;
+  pointer-events: none;
+}
+
+/* 侧栏分组的标题条上也点一颗星 */
+html[data-wiki-theme='legend'] .wiki-portal__title {
+  position: relative;
+}
+
+html[data-wiki-theme='legend'] .wiki-portal__title::after {
+  content: '';
+  position: absolute;
+  right: 0.35em;
+  top: 50%;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  background: url('./legend/sparkle.svg') center / contain no-repeat;
+  animation: lg-twinkle 1.7s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* ================================================================ 动画 */
 
 /* 金光横向流动 */
@@ -596,6 +736,55 @@ html[data-wiki-theme='legend'] .wiki-body img {
   56%,
   100% {
     opacity: 0.4;
+  }
+}
+
+/* 翅膀「意义不明地」闪 —— 用 steps 做出硬切换，越生硬越对味 */
+@keyframes lg-wingflash {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  70% {
+    opacity: 0.35;
+  }
+  71%,
+  100% {
+    opacity: 0.85;
+  }
+}
+
+/* 光芒旋转 */
+@keyframes lg-spin {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+/* 信息框里的光芒是绝对定位居中的，不能带 translateX */
+@keyframes lg-spin-centered {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 星星忽明忽暗 */
+@keyframes lg-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #ffd700);
+  }
+  50% {
+    opacity: 0.25;
+    filter: drop-shadow(0 0 12px #fffbe0);
   }
 }
 

@@ -55,6 +55,17 @@ npm run build    # 产物在 docs/.vitepress/dist/
 > 所以标题必须用 `h1:first-of-type` 而不是 `> h1:first-child` —— 后者永远匹配不到，
 > 标题会退化成黑字无下划线，在深色主题下直接看不见（踩过这个坑）。
 
+主题用到的图片放 `docs/.vitepress/theme/legend/`，**在 CSS 里用相对路径引用**
+（`url('./legend/xxx.png')`）—— Vite 会自动处理成带 base 前缀的资源，部署到
+`/YJlabwiki/` 这种子路径下也不会 404；写成绝对路径 `/legend/xxx.png` 就会 404。
+
+素材来源与授权：
+
+| 文件 | 来源 | 授权 |
+| --- | --- | --- |
+| `legend/wings-gold.png`、`wings-red.png` | [Angel Wings Effect](https://opengameart.org/content/angel-wings-effect) by Cethiel，本仓库把 5 帧原图合成为 APNG 并居中补齐 | **CC0**（公有领域） |
+| `legend/burst.svg`、`sparkle.svg` | 本仓库自绘 | 同本站 |
+
 ## 改代码前必读
 
 三处**删了会静默出问题**的地方：
