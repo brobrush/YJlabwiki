@@ -2,6 +2,9 @@ import type { Theme } from 'vitepress'
 import Layout from './Layout.vue'
 import NotFound from './NotFound.vue'
 import './wiki.css'
+// 附加主题：所有规则都以 html[data-wiki-theme='…'] 打头，不会影响默认皮肤。
+// 新增主题时在这里再 import 一个 css 即可，详见 themes.ts 顶部说明。
+import './theme-legend.css'
 
 /**
  * YJlab 维基主题

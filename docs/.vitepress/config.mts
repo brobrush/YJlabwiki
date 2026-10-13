@@ -80,6 +80,19 @@ export default defineConfig({
     // 注意：head 里的资源路径不会自动加 base 前缀，必须手动拼
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE_PATH}favicon.svg` }],
     ['meta', { name: 'theme-color', content: '#f6f6f6' }],
+    /*
+     * 防闪烁：在页面绘制之前把用户选过的主题写到 <html> 上。
+     * 否则客户端挂载前会先渲染默认的维基百科皮肤，切了主题的人每次刷新都会闪一下。
+     *
+     * ⚠️ 下面 'yjlab-wiki-theme' 和 'wiki' 两个字面量必须与
+     *    theme/themes.ts 里的 STORAGE_KEY / DEFAULT_THEME 保持一致。
+     */
+    [
+      'script',
+      {},
+      `(function(){try{var t=localStorage.getItem('yjlab-wiki-theme');` +
+        `if(t&&t!=='wiki'){document.documentElement.setAttribute('data-wiki-theme',t)}}catch(e){}})()`,
+    ],
   ],
 
   markdown: {

@@ -1,0 +1,622 @@
+/* ============================================================================
+ *  「传奇打金服」主题
+ *
+ *  开启方式：侧栏「外观」→ 传奇打金服
+ *  或直接给 <html> 加 data-wiki-theme="legend"
+ *
+ *  所有规则都用 html[data-wiki-theme='legend'] 打头，
+ *  无论加多少主题都不会互相污染，也不会动到默认的维基百科皮肤。
+ *
+ *  风格目标：2000 年代私服官网 —— 描边流光金字、9 宫格金框、
+ *  ridge 凸起立体边、贴图底纹、星星闪光、能发光的一律发光。
+ *  全部用 CSS 合成，不依赖任何图片资源。
+ * ==========================================================================*/
+
+html[data-wiki-theme='legend'] {
+  --lg-gold: #ffd700;
+  --lg-gold-dim: #8a6a12;
+  --lg-gold-bright: #fffbe0;
+  --lg-gold-deep: #5a3f00;
+  --lg-red: #cc0000;
+  --lg-red-bright: #ff2a00;
+  --lg-bg: #0b0700;
+  --lg-panel: #180f03;
+  --lg-cell: #241704;
+  --lg-box: #120b02;
+  --lg-text: #f2dc9b;
+
+  /* 「贴图」：用渐变条带伪造金属拉丝质感 */
+  --lg-metal: repeating-linear-gradient(
+      100deg,
+      #7a5200 0 6%,
+      #d4a017 6% 12%,
+      #fff3a0 12% 16%,
+      #d4a017 16% 22%,
+      #7a5200 22% 32%
+    ),
+    linear-gradient(180deg, #ffe066 0%, #b37700 100%);
+  --lg-metal-red: repeating-linear-gradient(
+      100deg,
+      #7a0a00 0 8%,
+      #cc1a00 8% 16%,
+      #ff6a3a 16% 20%,
+      #cc1a00 20% 28%,
+      #7a0a00 28% 40%
+    ),
+    linear-gradient(180deg, #ff4a1a 0%, #7a0a00 100%);
+  --lg-serif: 'SimSun', '宋体', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --lg-sans: 'SimHei', '黑体', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+}
+
+/* ============================================================ 全局廉价感 */
+
+html[data-wiki-theme='legend'] body {
+  background-color: var(--lg-bg);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 215, 0, 0.05) 0 2px, transparent 2px 10px),
+    repeating-linear-gradient(-45deg, rgba(255, 215, 0, 0.05) 0 2px, transparent 2px 10px),
+    radial-gradient(ellipse at 50% 0%, #3a2400 0%, #0b0700 60%);
+  background-attachment: fixed;
+  color: var(--lg-text);
+  font-family: var(--lg-serif);
+  font-weight: 700;
+}
+
+html[data-wiki-theme='legend'] ::selection {
+  background: var(--lg-red-bright);
+  color: var(--lg-gold-bright);
+}
+
+/* 金色滚动条 */
+html[data-wiki-theme='legend'] ::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+html[data-wiki-theme='legend'] ::-webkit-scrollbar-track {
+  background: #1a1004;
+  border: 1px inset #5a3f00;
+}
+
+html[data-wiki-theme='legend'] ::-webkit-scrollbar-thumb {
+  background: var(--lg-metal);
+  border: 2px outset #ffd700;
+}
+
+html[data-wiki-theme='legend'] a {
+  color: var(--lg-gold);
+  text-decoration: underline;
+  text-shadow: 0 0 6px rgba(255, 180, 0, 0.55);
+}
+
+html[data-wiki-theme='legend'] a:visited {
+  color: #c8930a;
+}
+
+html[data-wiki-theme='legend'] a:hover {
+  color: #fff;
+  background: linear-gradient(180deg, #ff6a3a, #a80f00);
+  text-decoration: none;
+  text-shadow: 0 0 10px #fff, 0 0 18px #ffb300;
+}
+
+/* 「描边流光金字」——全站标题统一用这一套
+ *
+ * ⚠️ 渐变的**两端必须是亮金色**。之前两端用了深棕 #7a5200，
+ *    结果流光动画把深色端转到文字上时标题直接变暗看不见了。
+ *    现在任何一帧都是金色，中间那段高光才是流动的。
+ */
+html[data-wiki-theme='legend'] .lg-goldtext,
+html[data-wiki-theme='legend'] .wiki-logo__mark,
+html[data-wiki-theme='legend'] .wiki-banner__title,
+html[data-wiki-theme='legend'] .wiki-body h1,
+html[data-wiki-theme='legend'] .wiki-body h2,
+html[data-wiki-theme='legend'] .wiki-portal__title {
+  color: #ffd700; /* 兜底：万一 background-clip 不生效也还是金色 */
+  background-image: linear-gradient(
+    100deg,
+    #ffc400 0%,
+    #ffd700 32%,
+    #fffbe0 50%,
+    #ffd700 68%,
+    #ffc400 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /*
+   * 描边和投影都要克制：中文字在 1.8em 这个字号下笔画只有 2–3px，
+   * 1px 深色描边 + 2px 深色投影会把字形本身盖掉，看起来就是一团暗色。
+   * 所以这里用 0.5px 描边 + 1px 投影，靠外发光提亮。
+   * 大字号（侧栏字标）在下面单独加强。
+   */
+  -webkit-text-stroke: 0.5px #6b3d00;
+  animation: lg-shine 3.2s linear infinite;
+  filter: drop-shadow(1px 1px 0 #4a1a00) drop-shadow(0 0 10px rgba(255, 200, 0, 0.9));
+}
+
+/* 侧栏字标字号大（2.7em），可以放心用粗描边和厚投影 */
+html[data-wiki-theme='legend'] .wiki-logo__mark {
+  -webkit-text-stroke: 1.5px #4a2c00;
+  filter: drop-shadow(2px 2px 0 #3d0000) drop-shadow(0 0 14px rgba(255, 200, 0, 0.95));
+}
+
+/* ================================================================ 左侧栏 */
+
+html[data-wiki-theme='legend'] .wiki-page-base {
+  background-image: linear-gradient(to bottom, #3a2400 0%, #0b0700 100%);
+}
+
+html[data-wiki-theme='legend'] .wiki-panel {
+  background: var(--lg-panel);
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 215, 0, 0.045) 0 1px,
+    transparent 1px 4px
+  );
+  border-right: 6px ridge var(--lg-gold-dim);
+}
+
+html[data-wiki-theme='legend'] .wiki-logo__mark {
+  font-family: var(--lg-sans);
+  font-size: 2.7em;
+}
+
+html[data-wiki-theme='legend'] .wiki-logo__mark .wiki-logo__red {
+  -webkit-text-fill-color: initial;
+  background: none;
+  color: var(--lg-red-bright);
+  -webkit-text-stroke: 1px #4a0000;
+  text-shadow: 0 0 10px #ff2a00, 2px 2px 0 #3d0000;
+}
+
+html[data-wiki-theme='legend'] .wiki-logo__tagline {
+  color: var(--lg-gold-dim);
+  letter-spacing: 0.2em;
+}
+
+html[data-wiki-theme='legend'] .wiki-logo__tagline::before {
+  content: '✦ ';
+  color: var(--lg-gold);
+}
+
+html[data-wiki-theme='legend'] .wiki-logo__tagline::after {
+  content: ' ✦';
+  color: var(--lg-gold);
+}
+
+/* 侧栏分组的标题条：做成凸起的金色按钮 */
+html[data-wiki-theme='legend'] .wiki-portal__title {
+  margin: 0 0 0.35em;
+  padding: 0.3em 0.4em;
+  background: var(--lg-metal);
+  -webkit-text-fill-color: #3d1f00;
+  -webkit-text-stroke: 0;
+  text-shadow: 1px 1px 0 #fff3a0;
+  border: 3px outset #ffd700;
+  text-align: center;
+  letter-spacing: 0.18em;
+  animation: none;
+  filter: none;
+}
+
+html[data-wiki-theme='legend'] .wiki-portal li::before {
+  content: '◆';
+  color: var(--lg-red-bright);
+  margin-right: 0.35em;
+  font-size: 0.8em;
+  text-shadow: 0 0 6px #ff2a00;
+}
+
+html[data-wiki-theme='legend'] .wiki-portal li.is-active a {
+  color: #fff;
+  background: linear-gradient(180deg, #ff6a3a, #a80f00);
+  text-shadow: 0 0 8px #fff, 0 0 14px #ffb300;
+  padding: 0 0.2em;
+}
+
+html[data-wiki-theme='legend'] .wiki-search__label {
+  background: var(--lg-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.6px #4a2c00;
+  letter-spacing: 0.2em;
+}
+
+html[data-wiki-theme='legend'] .wiki-search__input {
+  background: #000;
+  color: var(--lg-gold);
+  border: 3px inset var(--lg-gold-dim);
+  box-shadow: inset 2px 2px 6px #000, 0 0 8px rgba(255, 190, 0, 0.3);
+  font-family: var(--lg-serif);
+  font-weight: 700;
+}
+
+html[data-wiki-theme='legend'] .wiki-search__input:focus {
+  outline: none;
+  border-color: var(--lg-gold);
+  box-shadow: inset 2px 2px 6px #000, 0 0 16px rgba(255, 215, 0, 0.85);
+}
+
+html[data-wiki-theme='legend'] .wiki-search__btn {
+  background: var(--lg-metal);
+  color: #3d1f00;
+  border: 3px outset #ffe066;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-shadow: 1px 1px 0 #fff3a0;
+}
+
+html[data-wiki-theme='legend'] .wiki-search__btn:active {
+  border-style: inset;
+}
+
+html[data-wiki-theme='legend'] .wiki-search__results {
+  background: #0d0800;
+  border: 3px ridge var(--lg-gold-dim);
+  box-shadow: 0 0 18px rgba(255, 190, 0, 0.4);
+}
+
+html[data-wiki-theme='legend'] .wiki-search__results li {
+  border-bottom: 1px dotted var(--lg-gold-deep);
+}
+
+html[data-wiki-theme='legend'] .wiki-search__results small,
+html[data-wiki-theme='legend'] .wiki-search__empty {
+  color: var(--lg-gold-dim);
+}
+
+/* ========================================================== 个人栏与标签页 */
+
+html[data-wiki-theme='legend'] .wiki-head li {
+  border-left: 1px solid var(--lg-gold-deep);
+}
+
+html[data-wiki-theme='legend'] .wiki-tab {
+  background: var(--lg-metal);
+  border: 3px outset #ffe066;
+  border-bottom: none;
+  font-family: var(--lg-sans);
+}
+
+html[data-wiki-theme='legend'] .wiki-tab a,
+html[data-wiki-theme='legend'] .wiki-tab span {
+  color: #3d1f00;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #fff3a0;
+}
+
+html[data-wiki-theme='legend'] .wiki-tab:hover {
+  filter: brightness(1.15);
+}
+
+html[data-wiki-theme='legend'] .wiki-tab.is-active {
+  background: var(--lg-metal-red);
+  border-color: #ff6a3a;
+  animation: lg-pulse 1.6s ease-in-out infinite;
+}
+
+html[data-wiki-theme='legend'] .wiki-tab.is-active span {
+  color: var(--lg-gold-bright);
+  text-shadow: 0 0 6px #fff, 0 0 14px #ffb300;
+}
+
+html[data-wiki-theme='legend'] .wiki-tab__redlink {
+  color: #ffdd00 !important;
+  text-shadow: 0 0 6px #ff2a00 !important;
+}
+
+/* ================================================================ 内容区 */
+
+html[data-wiki-theme='legend'] .wiki-content {
+  background: var(--lg-box);
+  background-image:
+    repeating-linear-gradient(135deg, rgba(255, 215, 0, 0.035) 0 1px, transparent 1px 7px),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 190, 0, 0.12) 0%, transparent 70%);
+  border: 6px ridge var(--lg-gold-dim);
+  outline: 2px solid #3d2a00;
+  outline-offset: 2px;
+  color: var(--lg-text);
+  box-shadow: 0 0 0 2px #ffd700, 0 0 30px rgba(255, 180, 0, 0.35),
+    inset 0 0 70px rgba(255, 180, 0, 0.06);
+}
+
+/* 顶部的 ★ 装饰带 */
+html[data-wiki-theme='legend'] .wiki-content::before {
+  content: '★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★';
+  display: block;
+  margin: -2px 0 0.9em;
+  color: var(--lg-gold);
+  font-size: 0.8em;
+  letter-spacing: 0.5em;
+  text-align: center;
+  text-shadow: 0 0 8px #ffb300;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+html[data-wiki-theme='legend'] .wiki-sitenotice {
+  background: repeating-linear-gradient(
+    45deg,
+    #2a0a00 0 10px,
+    #3d0f00 10px 20px
+  );
+  border: 3px ridge var(--lg-red-bright);
+  color: var(--lg-gold-bright);
+  text-shadow: 0 0 8px #ffb300;
+  animation: lg-blink 1.2s steps(1, end) infinite;
+}
+
+html[data-wiki-theme='legend'] .wiki-body h3,
+html[data-wiki-theme='legend'] .wiki-body h4,
+html[data-wiki-theme='legend'] .wiki-body h5,
+html[data-wiki-theme='legend'] .wiki-body h6 {
+  color: var(--lg-gold-bright);
+  font-family: var(--lg-sans);
+  text-shadow: 1px 1px 0 #3d0000, 0 0 10px rgba(255, 190, 0, 0.6);
+}
+
+html[data-wiki-theme='legend'] .wiki-body h3::before {
+  content: '【';
+  color: var(--lg-red-bright);
+  text-shadow: 0 0 8px #ff2a00;
+}
+
+html[data-wiki-theme='legend'] .wiki-body h3::after {
+  content: '】';
+  color: var(--lg-red-bright);
+  text-shadow: 0 0 8px #ff2a00;
+}
+
+html[data-wiki-theme='legend'] .wiki-body blockquote {
+  border-left: 5px ridge var(--lg-gold-dim);
+  background: rgba(255, 215, 0, 0.05);
+  color: var(--lg-gold-dim);
+}
+
+html[data-wiki-theme='legend'] .wiki-body hr {
+  height: 3px;
+  border: none;
+  background: var(--lg-metal);
+  box-shadow: 0 0 10px rgba(255, 190, 0, 0.7);
+}
+
+html[data-wiki-theme='legend'] .wiki-body code {
+  background: #000;
+  border: 2px inset var(--lg-gold-deep);
+  color: var(--lg-gold);
+  text-shadow: 0 0 6px rgba(255, 190, 0, 0.6);
+}
+
+html[data-wiki-theme='legend'] .wiki-body pre {
+  background: #050300;
+  border: 4px ridge var(--lg-gold-deep);
+}
+
+html[data-wiki-theme='legend'] .wiki-body pre code {
+  border: none;
+  background: none;
+  text-shadow: none;
+}
+
+html[data-wiki-theme='legend'] .wiki-body a.new {
+  color: #ff5a2a;
+  text-shadow: 0 0 8px #ff2a00;
+}
+
+/* ================================================================ 表格 */
+
+html[data-wiki-theme='legend'] .wiki-body table {
+  background: #0d0800;
+  border: 4px ridge var(--lg-gold-dim);
+  box-shadow: 0 0 14px rgba(255, 180, 0, 0.25);
+}
+
+html[data-wiki-theme='legend'] .wiki-body th,
+html[data-wiki-theme='legend'] .wiki-body td {
+  border: 2px outset var(--lg-gold-deep);
+}
+
+html[data-wiki-theme='legend'] .wiki-body th {
+  background: var(--lg-metal-red);
+  color: var(--lg-gold-bright);
+  font-family: var(--lg-sans);
+  text-shadow: 0 0 8px #fff, 1px 1px 0 #3d0000;
+}
+
+html[data-wiki-theme='legend'] .wiki-body td {
+  background: var(--lg-cell);
+}
+
+/* ============================================================ 各种提示框 */
+
+html[data-wiki-theme='legend'] .wiki-infobox {
+  background: #0d0800;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.05) 0 1px,
+    transparent 1px 6px
+  );
+  border: 6px ridge var(--lg-gold);
+  outline: 2px solid #3d2a00;
+  box-shadow: 0 0 24px rgba(255, 190, 0, 0.45);
+}
+
+html[data-wiki-theme='legend'] .wiki-infobox__label {
+  background: var(--lg-metal-red);
+  border-bottom: 3px ridge var(--lg-gold);
+  color: var(--lg-gold-bright);
+  font-family: var(--lg-sans);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 10px #fff, 1px 1px 0 #3d0000;
+  animation: lg-pulse 2s ease-in-out infinite;
+}
+
+html[data-wiki-theme='legend'] .wiki-infobox__label::before {
+  content: '★ ';
+  color: var(--lg-gold);
+}
+
+html[data-wiki-theme='legend'] .wiki-infobox__label::after {
+  content: ' ★';
+  color: var(--lg-gold);
+}
+
+html[data-wiki-theme='legend'] .wiki-infobox th,
+html[data-wiki-theme='legend'] .wiki-infobox td {
+  border: none;
+  border-top: 1px dotted var(--lg-gold-deep);
+  background: none;
+}
+
+html[data-wiki-theme='legend'] .wiki-ambox {
+  background: #140c00;
+  border: 4px ridge var(--lg-gold-dim);
+  border-left: 10px ridge var(--lg-red-bright);
+  color: var(--lg-text);
+}
+
+html[data-wiki-theme='legend'] .wiki-ambox__label {
+  color: var(--lg-gold-bright);
+  text-shadow: 0 0 10px #ffb300;
+}
+
+html[data-wiki-theme='legend'] .wiki-ambox__label::before {
+  content: '【公告】';
+  color: var(--lg-red-bright);
+  text-shadow: 0 0 8px #ff2a00;
+  margin-right: 0.35em;
+}
+
+html[data-wiki-theme='legend'] .wiki-hatnote {
+  color: var(--lg-gold-dim);
+}
+
+html[data-wiki-theme='legend'] .wiki-toc {
+  background: #0d0800;
+  border: 4px ridge var(--lg-gold-dim);
+}
+
+/* ======================================================== 分类栏与页脚 */
+
+html[data-wiki-theme='legend'] .wiki-categories {
+  background: #140c00;
+  border: 4px ridge var(--lg-gold-dim);
+}
+
+html[data-wiki-theme='legend'] .wiki-categories__label {
+  background: var(--lg-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.6px #4a2c00;
+}
+
+html[data-wiki-theme='legend'] .wiki-footer {
+  border-top: 4px ridge var(--lg-gold-dim);
+  color: var(--lg-gold-dim);
+}
+
+html[data-wiki-theme='legend'] .wiki-lastmod {
+  color: var(--lg-gold-dim);
+}
+
+/* ============================================================== 首页 */
+
+html[data-wiki-theme='legend'] .wiki-banner {
+  background: var(--lg-metal-red);
+  border: 6px ridge var(--lg-gold);
+  outline: 2px solid #3d2a00;
+  box-shadow: 0 0 30px rgba(255, 120, 0, 0.5);
+}
+
+html[data-wiki-theme='legend'] .wiki-banner__title {
+  font-family: var(--lg-sans);
+  font-size: 1.9em;
+}
+
+html[data-wiki-theme='legend'] .wiki-banner__sub {
+  color: var(--lg-gold-bright);
+  text-shadow: 0 0 8px #ff2a00, 1px 1px 0 #3d0000;
+}
+
+html[data-wiki-theme='legend'] .wiki-card {
+  background: #0d0800;
+  border: 5px ridge var(--lg-gold-dim);
+  box-shadow: 0 0 16px rgba(255, 180, 0, 0.2);
+}
+
+html[data-wiki-theme='legend'] .wiki-card__title {
+  background: var(--lg-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.8px #4a2c00;
+  border-bottom: 3px ridge var(--lg-gold-dim);
+  font-family: var(--lg-sans);
+}
+
+/* 正文里的图片也加个金框 */
+html[data-wiki-theme='legend'] .wiki-body img {
+  border: 4px ridge var(--lg-gold-dim);
+  box-shadow: 0 0 16px rgba(255, 190, 0, 0.4);
+}
+
+/* ================================================================ 动画 */
+
+/* 金光横向流动 */
+@keyframes lg-shine {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
+/* 呼吸式发光 */
+@keyframes lg-pulse {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 4px rgba(255, 190, 0, 0.6));
+  }
+  50% {
+    filter: brightness(1.35) drop-shadow(0 0 14px rgba(255, 230, 100, 0.95));
+  }
+}
+
+/* 廉价闪烁 */
+@keyframes lg-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.4;
+  }
+}
+
+/* 尊重系统的「减少动态效果」设置 */
+@media (prefers-reduced-motion: reduce) {
+  html[data-wiki-theme='legend'] *,
+  html[data-wiki-theme='legend'] *::before,
+  html[data-wiki-theme='legend'] *::after {
+    animation: none !important;
+  }
+}
+
+/* ================================================================ 窄屏 */
+
+@media (max-width: 62em) {
+  html[data-wiki-theme='legend'] .wiki-panel {
+    border-right: none;
+    border-bottom: 6px ridge var(--lg-gold-dim);
+  }
+
+  html[data-wiki-theme='legend'] .wiki-content {
+    margin: 0 0.35em;
+  }
+}

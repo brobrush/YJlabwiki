@@ -16,6 +16,7 @@
 import { computed } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
 import WikiSearch from './WikiSearch.vue'
+import WikiThemePicker from './WikiThemePicker.vue'
 
 const { site, page, theme, frontmatter } = useData()
 const route = useRoute()
@@ -207,6 +208,9 @@ const loginText = computed<string>(() => cfg.value.login?.text ?? '登录 GitHub
           </li>
         </ul>
       </nav>
+
+      <!-- 外观：切换主题（维基百科 / 传奇打金服 / …），选择记在 localStorage -->
+      <WikiThemePicker />
 
       <!-- 工具 -->
       <nav v-if="toolItems.length" class="wiki-portal wiki-portal--tools">

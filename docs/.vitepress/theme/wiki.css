@@ -410,7 +410,14 @@ a:hover {
   overflow: hidden;
 }
 
-.wiki-body > h1:first-child {
+/*
+ * ⚠️ 必须用 h1:first-of-type，不能写 h1:first-child。
+ *    VitePress 的 <Content /> 会在内容外面套一层
+ *    <div style="position:relative">，h1 永远不是 .wiki-body 的直接子元素，
+ *    `> h1:first-child` 匹配不到 —— 标题会退化成默认样式（黑字、无下划线），
+ *    在深色主题下直接看不见。
+ */
+.wiki-body h1:first-of-type {
   margin: 0 0 0.25em;
   padding: 0;
   border-bottom: 1px solid var(--wiki-border);
