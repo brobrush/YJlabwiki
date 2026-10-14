@@ -63,6 +63,7 @@ const SIDEBAR = [
     items: [
       { text: '总览', link: '/tools/' },
       { text: '螺丝刀类', link: '/tools/screwdriver' },
+      { text: '电钻', link: '/tools/drill' },
       // 每新增一件工具，在这里加一行：
       // { text: '工具名', link: '/tools/英文文件名' },
     ],

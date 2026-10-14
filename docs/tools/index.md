@@ -19,6 +19,7 @@ categories:
 | 工具 | 简介 | 页面 |
 | --- | --- | --- |
 | 螺丝刀类 |  | [螺丝刀类](/tools/screwdriver) |
+| 电钻 |  | [电钻](/tools/drill) |
 
 ## 新增一件工具
 
