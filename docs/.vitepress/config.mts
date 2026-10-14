@@ -62,6 +62,7 @@ const SIDEBAR = [
     title: '工具介绍',
     items: [
       { text: '总览', link: '/tools/' },
+      { text: '螺丝刀类', link: '/tools/screwdriver' },
       // 每新增一件工具，在这里加一行：
       // { text: '工具名', link: '/tools/英文文件名' },
     ],
