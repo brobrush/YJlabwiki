@@ -5,6 +5,9 @@ import './wiki.css'
 // 附加主题：所有规则都以 html[data-wiki-theme='…'] 打头，不会影响默认皮肤。
 // 新增主题时在这里再 import 一个 css 即可，详见 themes.ts 顶部说明。
 import './theme-legend.css'
+// WindowsXP 不只是配色：它替换整站结构（Layout.vue 里分支），
+// 结构代码在 winxp/ 目录，这里只引它的样式表。
+import './theme-winxp.css'
 
 /**
  * YJlab 维基主题

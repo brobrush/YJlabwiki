@@ -1,0 +1,774 @@
+/* ============================================================================
+ *  「Windows XP」主题
+ *
+ *  这不是一套配色，而是把整站换成一台模拟电脑：
+ *  桌面 / 桌面图标 / 可拖拽缩放的窗口 / 任务栏 / 开始菜单。
+ *  结构代码在 winxp/ 目录，Layout.vue 里按 STRUCTURAL_THEMES 分支。
+ *
+ *  配色取自 Windows XP Luna 蓝色主题。
+ * ==========================================================================*/
+
+html[data-wiki-theme='winxp'] {
+  --xp-blue-dark: #0054e3;
+  --xp-blue: #0a5fe0;
+  --xp-blue-light: #3f8cf3;
+  --xp-title: linear-gradient(
+    180deg,
+    #0058ee 0%,
+    #3593ff 9%,
+    #288eff 18%,
+    #127dff 40%,
+    #036ffc 88%,
+    #0054e3 100%
+  );
+  --xp-title-off: linear-gradient(180deg, #7ba2e7 0%, #9db9ea 9%, #7ba2e7 40%, #6a92d8 100%);
+  --xp-face: #ece9d8;
+  --xp-face-light: #f5f3ea;
+  --xp-border: #0054e3;
+  --xp-btn: linear-gradient(180deg, #ffffff 0%, #f2f2ea 45%, #dcdcd0 46%, #e8e8dd 100%);
+  --xp-taskbar: linear-gradient(
+    180deg,
+    #245edb 0%,
+    #3f8cf3 9%,
+    #245edb 18%,
+    #245edb 92%,
+    #1941a5 100%
+  );
+  --xp-start: linear-gradient(180deg, #3c9a3c 0%, #52b152 45%, #2f7d2f 100%);
+  --xp-tray: linear-gradient(180deg, #0f9ae0 0%, #16a8f0 10%, #0d8ed6 55%, #0b7cc0 100%);
+}
+
+/* -------------------------------------------------- 全局与防闪烁
+ *
+ * config.mts 的 head 里那段脚本会在页面绘制前把 data-wiki-theme 写到 <html>，
+ * 所以这里可以立刻把维基布局藏掉 —— 切了 XP 的人不会先看到一闪的维基界面，
+ * 而是先看到墙纸，等客户端挂载后桌面图标和任务栏再出现。
+ */
+
+html[data-wiki-theme='winxp'] .wiki-page-base,
+html[data-wiki-theme='winxp'] .wiki-shell {
+  display: none !important;
+}
+
+html[data-wiki-theme='winxp'],
+html[data-wiki-theme='winxp'] body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  /* 「Bliss」风格的蓝天绿丘，纯 CSS 合成，不用任何图片 */
+  background-color: #4a9be8;
+  background-image:
+    radial-gradient(
+      ellipse 135% 40% at 50% 103%,
+      #7ccb45 0%,
+      #56a51a 38%,
+      #3d7d0e 68%,
+      #2f6209 100%
+    ),
+    linear-gradient(
+      180deg,
+      #1a5fb4 0%,
+      #3f8fd8 28%,
+      #79b8ec 52%,
+      #b8dcf7 70%,
+      #dceefc 79%,
+      #cdd8e6 80%
+    );
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  font-family: 'Trebuchet MS', 'Tahoma', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+}
+
+html[data-wiki-theme='winxp'] * {
+  box-sizing: border-box;
+}
+
+/* -------------------------------------------------- 桌面 */
+
+.xp-desktop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+}
+
+.xp-icons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1;
+}
+
+.xp-dicon {
+  width: 82px;
+  padding: 6px 2px 4px;
+  border: 1px dotted transparent;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  font-family: inherit;
+}
+
+.xp-dicon:hover,
+.xp-dicon:focus {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(11, 63, 148, 0.35);
+  outline: none;
+}
+
+.xp-dicon__img {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.55));
+}
+
+.xp-dicon__img--game {
+  filter: drop-shadow(0 0 6px #7ef7ff) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.xp-dicon__label {
+  font-size: 11px;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+/* 桌面上那个小提示牌 */
+.xp-hint {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  max-width: 250px;
+  padding: 10px 12px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: rgba(0, 40, 110, 0.45);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px #000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 1;
+}
+
+.xp-hint b {
+  font-size: 13px;
+}
+
+/* -------------------------------------------------- 窗口 */
+
+.xp-win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  min-height: 160px;
+  border: 3px solid var(--xp-blue-dark);
+  border-top: none;
+  border-radius: 8px 8px 0 0;
+  background: var(--xp-face);
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.xp-win.is-active {
+  box-shadow: 5px 5px 16px rgba(0, 0, 0, 0.6);
+}
+
+.xp-win__title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 27px;
+  padding: 0 3px 0 6px;
+  background: var(--xp-title);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: default;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+  flex: 0 0 auto;
+}
+
+.xp-win:not(.is-active) .xp-win__title {
+  background: var(--xp-title-off);
+  color: #e8eefb;
+}
+
+.xp-win__icon {
+  font-size: 14px;
+}
+
+.xp-win__text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.xp-btns {
+  display: flex;
+  gap: 2px;
+}
+
+.xp-wbtn {
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #4d8ff0 0%, #2f6fd8 50%, #1a52b8 100%);
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.xp-wbtn:hover {
+  filter: brightness(1.2);
+}
+
+.xp-wbtn--close {
+  background: linear-gradient(180deg, #f08a72 0%, #e04a3a 50%, #b8291a 100%);
+}
+
+.xp-wbtn span {
+  display: block;
+  width: 9px;
+  height: 9px;
+}
+
+.xp-wbtn--min span {
+  height: 2px;
+  margin-top: 4px;
+  background: #fff;
+}
+
+.xp-wbtn--max span {
+  border: 1px solid #fff;
+  border-top-width: 2px;
+}
+
+.xp-win__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-top: 1px solid #fff;
+  background: var(--xp-face);
+}
+
+/* 缩放热区 */
+.xp-rs {
+  position: absolute;
+  z-index: 5;
+}
+
+.xp-rs--e {
+  top: 27px;
+  right: 0;
+  width: 5px;
+  bottom: 5px;
+  cursor: ew-resize;
+}
+
+.xp-rs--s {
+  left: 0;
+  right: 5px;
+  bottom: 0;
+  height: 5px;
+  cursor: ns-resize;
+}
+
+.xp-rs--se {
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+}
+
+/* 页面窗口里的正文 */
+.xp-page {
+  background: #fff;
+  min-height: 100%;
+}
+
+.xp-page__body {
+  padding: 14px 18px 26px;
+}
+
+/* XP 模式里不该出现维基那套底部版权栏 */
+.xp-page .wiki-footer {
+  display: none;
+}
+
+/* -------------------------------------------------- 我的电脑 */
+
+.xp-explorer {
+  display: flex;
+  min-height: 100%;
+  background: #fff;
+  font-size: 12px;
+}
+
+.xp-explorer__tasks {
+  flex: 0 0 176px;
+  padding: 10px;
+  background: linear-gradient(180deg, #7ba7e8 0%, #6a97dd 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.xp-taskbox {
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.xp-taskbox__head {
+  padding: 5px 8px;
+  background: linear-gradient(180deg, #4a8ee8 0%, #2f6fd8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.xp-taskbox ul {
+  margin: 0;
+  padding: 5px 6px;
+  list-style: none;
+}
+
+.xp-taskbox li {
+  padding: 3px 4px;
+  cursor: pointer;
+  color: #0a3d91;
+  border-radius: 3px;
+}
+
+.xp-taskbox li:hover {
+  background: #dbeafd;
+  text-decoration: underline;
+}
+
+.xp-explorer__files {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.xp-explorer__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-bottom: 1px solid #b6bdd2;
+  background: var(--xp-face);
+}
+
+.xp-explorer__label {
+  color: #4a4a4a;
+}
+
+.xp-explorer__addr {
+  flex: 1;
+  padding: 2px 6px;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  color: #333;
+}
+
+.xp-explorer__scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.xp-filegroup {
+  margin-bottom: 12px;
+}
+
+.xp-filegroup__title {
+  margin: 0 0 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #d6ddf0;
+  color: #0a3d91;
+  font-size: 12px;
+}
+
+.xp-filegroup__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.xp-file {
+  width: 108px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.xp-file:hover {
+  border-color: #b8cdf0;
+  background: #eef4ff;
+}
+
+.xp-file.is-selected {
+  border-color: #6a97dd;
+  background: #cfe0fa;
+}
+
+.xp-file__icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.xp-file__name {
+  word-break: break-all;
+  line-height: 1.25;
+}
+
+.xp-explorer__status {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 8px;
+  border-top: 1px solid #b6bdd2;
+  background: var(--xp-face);
+  color: #444;
+}
+
+.xp-explorer__hint {
+  color: #7a7a7a;
+}
+
+/* -------------------------------------------------- 俄罗斯方块 */
+
+.xp-tetris {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #1b1b1b;
+  min-height: 100%;
+}
+
+.xp-tetris canvas {
+  border: 2px inset #555;
+  background: #000;
+  display: block;
+}
+
+.xp-tetris__side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 118px;
+  color: #e8e8e8;
+  font-size: 12px;
+}
+
+.xp-tetris__panel {
+  padding: 6px 8px;
+  border: 2px inset #555;
+  background: #101010;
+}
+
+.xp-tetris__row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1px 0;
+}
+
+.xp-btn {
+  padding: 4px 8px;
+  border: 2px outset #cfcfcf;
+  border-radius: 3px;
+  background: var(--xp-btn);
+  color: #111;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.xp-btn:active:not(:disabled) {
+  border-style: inset;
+}
+
+.xp-btn:disabled {
+  color: #999;
+  cursor: default;
+}
+
+.xp-tetris__keys {
+  margin-top: auto;
+  color: #9a9a9a;
+  line-height: 1.7;
+  font-size: 11px;
+}
+
+/* -------------------------------------------------- 开始菜单 */
+
+.xp-start {
+  position: absolute;
+  left: 2px;
+  bottom: 32px;
+  width: 420px;
+  max-height: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #0a3d91;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+  box-shadow: 3px -2px 14px rgba(0, 0, 0, 0.5);
+  z-index: 9000;
+  overflow: hidden;
+}
+
+.xp-start__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, #1c6fd8 0%, #0e56b8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.xp-start__avatar {
+  font-size: 22px;
+}
+
+.xp-start__cols {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.xp-start__left,
+.xp-start__right {
+  padding: 6px;
+  overflow: auto;
+}
+
+.xp-start__left {
+  flex: 1.35;
+  background: #fff;
+}
+
+.xp-start__right {
+  flex: 1;
+  background: #d3e5fa;
+}
+
+.xp-start__grouptitle {
+  padding: 6px 6px 3px;
+  color: #0a3d91;
+  font-weight: 700;
+  font-size: 11px;
+  border-bottom: 1px solid #b8cdf0;
+  margin-bottom: 3px;
+}
+
+.xp-start__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 4px 6px;
+  border: none;
+  background: none;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.xp-start__item:hover {
+  background: #2f6fd8;
+  color: #fff;
+}
+
+.xp-start__item.is-current {
+  font-weight: 700;
+  background: #bcd8f7;
+}
+
+.xp-start__ico {
+  font-size: 15px;
+  width: 18px;
+  text-align: center;
+}
+
+.xp-start__sep {
+  height: 1px;
+  margin: 6px 4px;
+  background: #b8cdf0;
+}
+
+.xp-start__foot {
+  padding: 5px 8px;
+  background: linear-gradient(180deg, #3f8cf3 0%, #245edb 100%);
+  text-align: right;
+}
+
+.xp-start__footbtn {
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.xp-start__footbtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* -------------------------------------------------- 任务栏 */
+
+.xp-taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  display: flex;
+  align-items: stretch;
+  background: var(--xp-taskbar);
+  border-top: 1px solid #4a8ee8;
+  z-index: 8000;
+}
+
+.xp-startbtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 20px 2px 8px;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--xp-start);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  font-style: italic;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+
+.xp-startbtn:hover,
+.xp-startbtn.is-open {
+  filter: brightness(1.15);
+}
+
+.xp-startbtn__flag {
+  font-size: 15px;
+  font-style: normal;
+}
+
+.xp-taskbar__sep {
+  width: 2px;
+  margin: 4px 3px;
+  background: #1a4bb0;
+  box-shadow: 1px 0 0 #4a8ee8;
+}
+
+.xp-taskbar__wins {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px;
+  overflow: hidden;
+}
+
+.xp-taskbtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 160px;
+  padding: 3px 8px;
+  border: 1px solid #1a4bb0;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #4a8ee8 0%, #2f6fd8 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.xp-taskbtn.is-active {
+  background: linear-gradient(180deg, #1a4bb0 0%, #245edb 100%);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.xp-taskbtn__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.xp-tray {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  background: var(--xp-tray);
+  border-left: 1px solid #1a4bb0;
+  color: #fff;
+  font-size: 11px;
+}
+
+.xp-tray__clock {
+  min-width: 44px;
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* -------------------------------------------------- 窄屏 */
+
+@media (max-width: 62em) {
+  .xp-start {
+    width: min(420px, calc(100vw - 8px));
+  }
+
+  .xp-explorer__tasks {
+    display: none;
+  }
+
+  .xp-hint {
+    max-width: 190px;
+    font-size: 11px;
+  }
+}

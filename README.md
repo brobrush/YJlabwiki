@@ -66,6 +66,35 @@ npm run build    # 产物在 docs/.vitepress/dist/
 | `legend/wings-gold.png`、`wings-red.png` | [Angel Wings Effect](https://opengameart.org/content/angel-wings-effect) by Cethiel，本仓库把 5 帧原图合成为 APNG 并居中补齐 | **CC0**（公有领域） |
 | `legend/burst.svg`、`sparkle.svg` | 本仓库自绘 | 同本站 |
 
+### WindowsXP 主题（会替换整站结构）
+
+它是唯一一个**不只是配色**的主题：切过去之后整站变成一台模拟电脑 ——
+桌面图标、可拖拽/缩放/最小化/最大化的窗口、任务栏、开始菜单，还有一个能玩的俄罗斯方块。
+代码在 `docs/.vitepress/theme/winxp/`：
+
+| 文件 | 作用 |
+| --- | --- |
+| `windows.ts` | 窗口管理器：开/关/拖动/缩放/最小化/最大化/置顶 |
+| `XpWindow.vue` | XP Luna 标题栏与八个方向的窗口操作 |
+| `XpDesktop.vue` | 桌面、图标、窗口层，以及和路由的同步 |
+| `XpTaskbar.vue` · `XpStartMenu.vue` | 任务栏与开始菜单（原侧栏内容和主题切换都搬到这里） |
+| `XpMyComputer.vue` | 「我的电脑」：各个栏目与条目，外加一个假文件 |
+| `XpTetris.vue` | 可以玩的俄罗斯方块 |
+| `theme-winxp.css` | Luna 配色、CSS 合成的「Bliss」墙纸 |
+
+**两个必须知道的实现约束：**
+
+1. **页面窗口只有一个。** VitePress 的 `<Content />` 永远只渲染**当前路由**，
+   没法同时把两个路由的内容放进两个窗口。所以「打开页面」是在同一个窗口里导航。
+2. **首次进入 XP 模式时必须再走一次路由**（见 `XpDesktop.vue` 的 `onMounted`）。
+   VitePress 首次加载用的是页面的 `.lean.js` 版组件 —— 它只含动态部分，静态正文靠
+   SSR 出来的 DOM 补全；而 XP 模式会把那层 DOM 换成桌面，lean 组件就渲染不出正文了。
+   再调一次 `router.go(location.href)` 就会加载完整版组件（地址不变，不污染历史）。
+
+改完 XP 主题想截图验证的话，用 `python3 scripts/xp-shot.py <路由> <输出名> [要执行的JS]`：
+它会注入主题种子和一张慢加载图（把 `load` 拖后，好让无头浏览器拍到客户端渲染结果），
+也可以注入 JS 模拟点击。跑完记得 `npm run build` 把注入清掉。
+
 ## 改代码前必读
 
 三处**删了会静默出问题**的地方：

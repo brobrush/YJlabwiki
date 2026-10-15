@@ -13,13 +13,32 @@
  * │  组别      │   分类栏 / 页脚                          │
  * └────────────┴─────────────────────────────────────────┘
  */
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
 import WikiSearch from './WikiSearch.vue'
 import WikiThemePicker from './WikiThemePicker.vue'
 
 const { site, page, theme, frontmatter } = useData()
 const route = useRoute()
+
+/* ---------------------------------------------------------------- 主题分支
+ * WindowsXP 主题要换掉整个页面结构（变成一台电脑），不是只换配色，
+ * 所以在这里分支：XP 走 <XpDesktop>，其余主题走下面这套维基布局。
+ *
+ * mounted 的意义：SSR 阶段读不到 localStorage，首屏必须渲染维基布局，
+ * 否则 hydration 会对不上。挂载后再切，Vue 不会报警。
+ */
+import XpDesktop from './winxp/XpDesktop.vue'
+import { STRUCTURAL_THEMES, useWikiTheme } from './themes'
+
+const { theme: currentTheme } = useWikiTheme()
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
+const useXp = computed(
+  () => mounted.value && STRUCTURAL_THEMES.includes(currentTheme.value),
+)
 
 const cfg = computed<any>(() => (theme.value as any).wiki ?? {})
 const wordmark = computed(() => cfg.value.wordmark ?? { red: 'YJ', rest: 'lab' })
@@ -167,154 +186,157 @@ const loginText = computed<string>(() => cfg.value.login?.text ?? '登录 GitHub
 </script>
 
 <template>
-  <div class="wiki-page-base" />
-  <div class="wiki-shell">
-    <!-- ============================ 左侧面板 ============================ -->
-    <aside class="wiki-panel">
-      <a class="wiki-logo" :href="withBase('/')">
-        <span class="wiki-logo__mark">
-          <span class="wiki-logo__red">{{ wordmark.red }}</span>{{ wordmark.rest }}
-        </span>
-        <span class="wiki-logo__tagline">{{ tagline }}</span>
-      </a>
+  <XpDesktop v-if="useXp" />
+  <template v-else>
+    <div class="wiki-page-base" />
+    <div class="wiki-shell">
+      <!-- ============================ 左侧面板 ============================ -->
+      <aside class="wiki-panel">
+        <a class="wiki-logo" :href="withBase('/')">
+          <span class="wiki-logo__mark">
+            <span class="wiki-logo__red">{{ wordmark.red }}</span>{{ wordmark.rest }}
+          </span>
+          <span class="wiki-logo__tagline">{{ tagline }}</span>
+        </a>
 
-      <WikiSearch />
+        <WikiSearch />
 
-      <!-- 导航 -->
-      <nav v-if="navItems.length" class="wiki-portal wiki-portal--nav">
-        <h3 class="wiki-portal__title">导航</h3>
-        <ul>
-          <li v-for="item in navItems" :key="item.link" :class="{ 'is-active': isActive(item.link) }">
-            <a :href="href(item.link)">{{ item.text }}</a>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- ▼ 三大分类：世代编年史 / 组别 / 工具介绍（由 config.mts 的 SIDEBAR 驱动）▼ -->
-      <nav
-        v-for="cat in categories"
-        :key="cat.title"
-        class="wiki-portal"
-        :aria-label="cat.title"
-      >
-        <h3 class="wiki-portal__title">{{ cat.title }}</h3>
-        <ul>
-          <li
-            v-for="item in cat.items"
-            :key="item.link"
-            :class="{ 'is-active': isActive(item.link) }"
-          >
-            <a :href="href(item.link)">{{ item.text }}</a>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- 外观：切换主题（维基百科 / 传奇打金服 / …），选择记在 localStorage -->
-      <WikiThemePicker />
-
-      <!-- 工具 -->
-      <nav v-if="toolItems.length" class="wiki-portal wiki-portal--tools">
-        <h3 class="wiki-portal__title">本站工具</h3>
-        <ul>
-          <li v-for="item in toolItems" :key="item.text">
-            <a
-              v-if="item.random"
-              href="#"
-              @click="randomEntry"
-            >{{ item.text }}</a>
-            <a v-else :href="href(item.link)">{{ item.text }}</a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <!-- ============================ 个人工具栏 ============================ -->
-    <div class="wiki-head">
-      <ul>
-        <li v-for="item in personalItems" :key="item.text">
-          <a :href="href(item.link)">{{ item.text }}</a>
-        </li>
-        <li>
-          <a :href="loginUrl" target="_blank" rel="noopener">{{ loginText }}</a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- ============================== 标签页 ============================== -->
-    <div class="wiki-tabs">
-      <div class="wiki-tabs__left">
-        <div class="wiki-tab is-active">
-          <span :class="{ 'wiki-tab__redlink': isNotFound }">条目</span>
-        </div>
-        <div class="wiki-tab"><a :href="discussUrl" target="_blank" rel="noopener">讨论</a></div>
-      </div>
-      <div class="wiki-tabs__right">
-        <div class="wiki-tab is-active"><span>阅读</span></div>
-        <div class="wiki-tab">
-          <a
-            :href="isNotFound ? createUrl : editUrl"
-            :class="{ 'wiki-tab__redlink': !repoConfigured || isNotFound }"
-            target="_blank"
-            rel="noopener"
-          >{{ isNotFound ? '创建本页' : '编辑' }}</a>
-        </div>
-        <div class="wiki-tab" v-if="!isNotFound">
-          <a
-            :href="historyUrl"
-            :class="{ 'wiki-tab__redlink': !repoConfigured }"
-            target="_blank"
-            rel="noopener"
-          >查看历史</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================== 正文区 ============================== -->
-    <div class="wiki-content-wrap">
-      <main class="wiki-content">
-        <div v-if="showSetupNotice" class="wiki-sitenotice">
-          本维基尚未绑定代码仓库 —— 请先在
-          <code>docs/.vitepress/config.mts</code> 里填写 <code>REPO</code>，
-          之后「编辑」「讨论」「查看历史」标签即可直接跳到网页编辑器。
-        </div>
-
-        <div class="wiki-body">
-          <!--
-            404 时 Content 渲染的是 docs/404.md 的内容
-            （VitePress 把它作为找不到页面时的兜底组件）。
-            千万不要删掉 docs/404.md —— 否则未知地址会是一片空白。
-          -->
-          <Content />
-        </div>
-
-        <!-- 分类栏 -->
-        <div v-if="pageCategories.length && !isNotFound" class="wiki-categories">
-          <span class="wiki-categories__label">分类</span>：
-          <template v-for="(c, i) in pageCategories" :key="c">
-            <a :href="categoryHref(c)">{{ c }}</a><span v-if="i < pageCategories.length - 1"> | </span>
-          </template>
-        </div>
-
-        <p v-if="lastUpdated && !isNotFound" class="wiki-lastmod">本页面最后修订于 {{ lastUpdated }}。</p>
-
-        <!-- 页脚 -->
-        <footer class="wiki-footer">
+        <!-- 导航 -->
+        <nav v-if="navItems.length" class="wiki-portal wiki-portal--nav">
+          <h3 class="wiki-portal__title">导航</h3>
           <ul>
-            <li><a :href="withBase('/help/')">编辑指南</a></li>
-            <li><a :href="withBase('/all-pages')">所有页面</a></li>
-            <li><a :href="withBase('/about')">关于 YJlab</a></li>
-            <li><a :href="recentChangesUrl" target="_blank" rel="noopener">最近更改</a></li>
+            <li v-for="item in navItems" :key="item.link" :class="{ 'is-active': isActive(item.link) }">
+              <a :href="href(item.link)">{{ item.text }}</a>
+            </li>
           </ul>
-          <p>
-            除非另有说明，本维基内容采用
-            <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="noopener">
-              知识共享 署名-相同方式共享 4.0 国际
-            </a>
-            协议授权。本站为实验室内部资料，风格致敬
-            <a href="https://zh.wikipedia.org/" target="_blank" rel="noopener">维基百科</a>。
-          </p>
-        </footer>
-      </main>
+        </nav>
+
+        <!-- ▼ 三大分类：世代编年史 / 组别 / 工具介绍（由 config.mts 的 SIDEBAR 驱动）▼ -->
+        <nav
+          v-for="cat in categories"
+          :key="cat.title"
+          class="wiki-portal"
+          :aria-label="cat.title"
+        >
+          <h3 class="wiki-portal__title">{{ cat.title }}</h3>
+          <ul>
+            <li
+              v-for="item in cat.items"
+              :key="item.link"
+              :class="{ 'is-active': isActive(item.link) }"
+            >
+              <a :href="href(item.link)">{{ item.text }}</a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 外观：切换主题（维基百科 / 传奇打金服 / …），选择记在 localStorage -->
+        <WikiThemePicker />
+
+        <!-- 工具 -->
+        <nav v-if="toolItems.length" class="wiki-portal wiki-portal--tools">
+          <h3 class="wiki-portal__title">本站工具</h3>
+          <ul>
+            <li v-for="item in toolItems" :key="item.text">
+              <a
+                v-if="item.random"
+                href="#"
+                @click="randomEntry"
+              >{{ item.text }}</a>
+              <a v-else :href="href(item.link)">{{ item.text }}</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- ============================ 个人工具栏 ============================ -->
+      <div class="wiki-head">
+        <ul>
+          <li v-for="item in personalItems" :key="item.text">
+            <a :href="href(item.link)">{{ item.text }}</a>
+          </li>
+          <li>
+            <a :href="loginUrl" target="_blank" rel="noopener">{{ loginText }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ============================== 标签页 ============================== -->
+      <div class="wiki-tabs">
+        <div class="wiki-tabs__left">
+          <div class="wiki-tab is-active">
+            <span :class="{ 'wiki-tab__redlink': isNotFound }">条目</span>
+          </div>
+          <div class="wiki-tab"><a :href="discussUrl" target="_blank" rel="noopener">讨论</a></div>
+        </div>
+        <div class="wiki-tabs__right">
+          <div class="wiki-tab is-active"><span>阅读</span></div>
+          <div class="wiki-tab">
+            <a
+              :href="isNotFound ? createUrl : editUrl"
+              :class="{ 'wiki-tab__redlink': !repoConfigured || isNotFound }"
+              target="_blank"
+              rel="noopener"
+            >{{ isNotFound ? '创建本页' : '编辑' }}</a>
+          </div>
+          <div class="wiki-tab" v-if="!isNotFound">
+            <a
+              :href="historyUrl"
+              :class="{ 'wiki-tab__redlink': !repoConfigured }"
+              target="_blank"
+              rel="noopener"
+            >查看历史</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================== 正文区 ============================== -->
+      <div class="wiki-content-wrap">
+        <main class="wiki-content">
+          <div v-if="showSetupNotice" class="wiki-sitenotice">
+            本维基尚未绑定代码仓库 —— 请先在
+            <code>docs/.vitepress/config.mts</code> 里填写 <code>REPO</code>，
+            之后「编辑」「讨论」「查看历史」标签即可直接跳到网页编辑器。
+          </div>
+
+          <div class="wiki-body">
+            <!--
+              404 时 Content 渲染的是 docs/404.md 的内容
+              （VitePress 把它作为找不到页面时的兜底组件）。
+              千万不要删掉 docs/404.md —— 否则未知地址会是一片空白。
+            -->
+            <Content />
+          </div>
+
+          <!-- 分类栏 -->
+          <div v-if="pageCategories.length && !isNotFound" class="wiki-categories">
+            <span class="wiki-categories__label">分类</span>：
+            <template v-for="(c, i) in pageCategories" :key="c">
+              <a :href="categoryHref(c)">{{ c }}</a><span v-if="i < pageCategories.length - 1"> | </span>
+            </template>
+          </div>
+
+          <p v-if="lastUpdated && !isNotFound" class="wiki-lastmod">本页面最后修订于 {{ lastUpdated }}。</p>
+
+          <!-- 页脚 -->
+          <footer class="wiki-footer">
+            <ul>
+              <li><a :href="withBase('/help/')">编辑指南</a></li>
+              <li><a :href="withBase('/all-pages')">所有页面</a></li>
+              <li><a :href="withBase('/about')">关于 YJlab</a></li>
+              <li><a :href="recentChangesUrl" target="_blank" rel="noopener">最近更改</a></li>
+            </ul>
+            <p>
+              除非另有说明，本维基内容采用
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="noopener">
+                知识共享 署名-相同方式共享 4.0 国际
+              </a>
+              协议授权。本站为实验室内部资料，风格致敬
+              <a href="https://zh.wikipedia.org/" target="_blank" rel="noopener">维基百科</a>。
+            </p>
+          </footer>
+        </main>
+      </div>
     </div>
-  </div>
+  </template>
 </template>
