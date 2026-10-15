@@ -7,7 +7,7 @@ categories:
 
 <div class="wiki-banner">
   <p class="wiki-banner__title">欢迎来到 <span class="wiki-red">YJ</span>lab 维基</p>
-  <p class="wiki-banner__sub">实验室的世代编年史与组别档案 —— 人人可编辑的自由百科全书</p>
+  <p class="wiki-banner__sub">实验室的世代编年史与组别档案 —— 人人可阅览的自由百科全书</p>
 </div>
 
 **YJlab 维基**是 应急科技创新实验室的过去和历史与传说，由实验室成员共同撰写与维护。本站收录实验室自成立以来的**世代编年史**，以及各**组别**的人员、方向、规范与成果，目标是把口口相传的经验沉淀成可检索、可追溯、可交接的文本。
