@@ -7,6 +7,7 @@
  */
 import { computed } from 'vue'
 import { useData } from 'vitepress'
+import XpIcon from './XpIcon.vue'
 import { useXpOpenPage } from './openPage'
 
 const { theme } = useData()
@@ -40,16 +41,16 @@ const total = computed(() =>
       <div class="xp-taskbox">
         <div class="xp-taskbox__head">系统任务</div>
         <ul>
-          <li @click="open('/', '首页')">🏠 回到桌面</li>
-          <li @click="open('/all-pages', '所有页面')">📋 查看所有页面</li>
-          <li @click="open('/help/', '编辑指南')">❓ 怎么编辑</li>
+          <li @click="open('/', '首页')"><XpIcon name="home" :size="14" /> 回到桌面</li>
+          <li @click="open('/all-pages', '所有页面')"><XpIcon name="clipboard" :size="14" /> 查看所有页面</li>
+          <li @click="open('/help/', '编辑指南')"><XpIcon name="help" :size="14" /> 怎么编辑</li>
         </ul>
       </div>
       <div class="xp-taskbox">
         <div class="xp-taskbox__head">其他位置</div>
         <ul>
           <li v-for="c in categories" :key="c.title" @click="open(c.items[0].link, c.title)">
-            📁 {{ c.title }}
+            <XpIcon name="folder" :size="14" /> {{ c.title }}
           </li>
         </ul>
       </div>
@@ -72,7 +73,7 @@ const total = computed(() =>
               class="xp-file"
               @click="open(item.link, item.text)"
             >
-              <span class="xp-file__icon">📄</span>
+              <XpIcon class="xp-file__icon" name="file" :size="30" />
               <span class="xp-file__name">{{ item.text }}</span>
             </button>
           </div>
@@ -85,7 +86,7 @@ const total = computed(() =>
               class="xp-file"
               @click="open(FAKE_FILE.path, FAKE_FILE.title)"
             >
-              <span class="xp-file__icon">📃</span>
+              <XpIcon class="xp-file__icon" name="textfile" :size="30" />
               <span class="xp-file__name">{{ FAKE_FILE.name }}</span>
             </button>
           </div>

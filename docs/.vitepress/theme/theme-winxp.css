@@ -55,32 +55,38 @@ html[data-wiki-theme='winxp'] body {
   height: 100%;
   overflow: hidden;
   margin: 0;
-  /* 「Bliss」风格的蓝天绿丘，纯 CSS 合成，不用任何图片 */
-  background-color: #4a9be8;
-  background-image:
-    radial-gradient(
-      ellipse 135% 40% at 50% 103%,
-      #7ccb45 0%,
-      #56a51a 38%,
-      #3d7d0e 68%,
-      #2f6209 100%
-    ),
-    linear-gradient(
-      180deg,
-      #1a5fb4 0%,
-      #3f8fd8 28%,
-      #79b8ec 52%,
-      #b8dcf7 70%,
-      #dceefc 79%,
-      #cdd8e6 80%
-    );
+  /*
+   * 墙纸是自绘的 SVG（winxp/wallpaper.svg）。
+   * 之前用 CSS 渐变叠出来的版本有个 bug：radial-gradient 会填满整个元素，
+   * 超出椭圆范围的部分用最后一个色标（不透明的深绿）填充，把下面那层天空整个盖住了，
+   * 结果整屏都是绿的。改用图片就没有这个问题。
+   */
+  background-color: #2f7fd0;
+  background-image: url('./winxp/wallpaper.svg');
+  background-size: cover;
+  background-position: center center;
   background-repeat: no-repeat;
-  background-size: 100% 100%, 100% 100%;
+  background-attachment: fixed;
   font-family: 'Trebuchet MS', 'Tahoma', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
 }
 
 html[data-wiki-theme='winxp'] * {
   box-sizing: border-box;
+}
+
+/* 自绘 SVG 图标（icons/ 目录）。所有图标都是 <img>，统一在这里控制对齐 */
+html[data-wiki-theme='winxp'] .xp-ico {
+  display: inline-block;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+.xp-taskbtn__ico {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
 }
 
 /* -------------------------------------------------- 桌面 */
@@ -125,8 +131,8 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-dicon__img {
-  font-size: 30px;
-  line-height: 1;
+  width: 34px;
+  height: 34px;
   filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.55));
 }
 
@@ -205,7 +211,8 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-win__icon {
-  font-size: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .xp-win__text {
@@ -352,6 +359,9 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-taskbox li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   padding: 3px 4px;
   cursor: pointer;
   color: #0a3d91;
@@ -443,8 +453,8 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-file__icon {
-  font-size: 26px;
-  line-height: 1;
+  width: 30px;
+  height: 30px;
 }
 
 .xp-file__name {
@@ -560,7 +570,8 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-start__avatar {
-  font-size: 22px;
+  width: 24px;
+  height: 24px;
 }
 
 .xp-start__cols {
@@ -622,9 +633,9 @@ html[data-wiki-theme='winxp'] * {
 }
 
 .xp-start__ico {
-  font-size: 15px;
-  width: 18px;
-  text-align: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
 }
 
 .xp-start__sep {

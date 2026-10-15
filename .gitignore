@@ -7,3 +7,5 @@ docs/public/search-index.json
 
 # 本地截图/临时文件
 .preview/
+# 找素材时下载的原始文件，不进仓库
+.assets-src/

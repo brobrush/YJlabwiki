@@ -8,6 +8,7 @@
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'
 import { useWikiTheme } from '../themes'
+import XpIcon from './XpIcon.vue'
 import { useXpOpenPage } from './openPage'
 
 const emit = defineEmits<{ (e: 'close'): void }>()
@@ -47,7 +48,7 @@ function pickTheme(id: string) {
 <template>
   <div class="xp-start" @click.stop>
     <header class="xp-start__user">
-      <span class="xp-start__avatar">🧪</span>
+      <XpIcon class="xp-start__avatar" name="computer" :size="24" />
       <span class="xp-start__name">YJlab</span>
     </header>
 
@@ -62,7 +63,7 @@ function pickTheme(id: string) {
             class="xp-start__item"
             @click="go(item.link, item.text)"
           >
-            <span class="xp-start__ico">📄</span>{{ item.text }}
+            <XpIcon class="xp-start__ico" name="file" :size="15" />{{ item.text }}
           </button>
         </div>
 
@@ -70,10 +71,10 @@ function pickTheme(id: string) {
 
         <!-- 所有页面 / 编辑指南 / 仓库 已经在右栏的「本站工具」里了，这里不重复 -->
         <button class="xp-start__item" @click="go('/about', '关于本站')">
-          <span class="xp-start__ico">ℹ️</span>关于本站
+          <XpIcon class="xp-start__ico" name="info" :size="15" />关于本站
         </button>
         <button class="xp-start__item" @click="go('/', '首页')">
-          <span class="xp-start__ico">🏠</span>首页
+          <XpIcon class="xp-start__ico" name="home" :size="15" />首页
         </button>
       </div>
 
@@ -88,7 +89,7 @@ function pickTheme(id: string) {
           :title="t.hint"
           @click="pickTheme(t.id)"
         >
-          <span class="xp-start__ico">{{ currentTheme === t.id ? '✅' : '🎨' }}</span>{{ t.label }}
+          <XpIcon class="xp-start__ico" :name="currentTheme === t.id ? 'info' : 'gear'" :size="15" />{{ t.label }}
         </button>
 
         <div class="xp-start__sep" />
@@ -100,7 +101,7 @@ function pickTheme(id: string) {
           class="xp-start__item"
           @click="item.random ? openRandom() : go(item.link, item.text)"
         >
-          <span class="xp-start__ico">{{ item.random ? '🎲' : '🔗' }}</span>{{ item.text }}
+          <XpIcon class="xp-start__ico" :name="item.random ? 'random' : 'link'" :size="15" />{{ item.text }}
         </button>
         <a
           v-for="item in personalItems"
@@ -111,13 +112,13 @@ function pickTheme(id: string) {
           rel="noopener"
           @click="emit('close')"
         >
-          <span class="xp-start__ico">🔗</span>{{ item.text }}
+          <XpIcon class="xp-start__ico" name="gear" :size="15" />{{ item.text }}
         </a>
       </div>
     </div>
 
     <footer class="xp-start__foot">
-      <button class="xp-start__footbtn" @click="go('/', '首页')">🏠 回到桌面</button>
+      <button class="xp-start__footbtn" @click="go('/', '首页')"><XpIcon name="home" :size="14" /> 回到桌面</button>
     </footer>
   </div>
 </template>

@@ -23,7 +23,7 @@ export function useXpOpenPage() {
         kind: 'page',
         title: title || path,
         path,
-        icon: '🌐',
+        icon: 'globe',
         w: 800,
         h: 560,
       })

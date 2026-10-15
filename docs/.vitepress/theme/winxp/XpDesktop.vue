@@ -27,6 +27,7 @@ import {
   windows,
 } from './windows'
 import { useWikiTheme } from '../themes'
+import XpIcon from './XpIcon.vue'
 import XpWindow from './XpWindow.vue'
 import XpTaskbar from './XpTaskbar.vue'
 import XpStartMenu from './XpStartMenu.vue'
@@ -60,7 +61,7 @@ function openMyComputer() {
     id: 'win:mycomputer',
     kind: 'mycomputer',
     title: '我的电脑',
-    icon: '🖥️',
+    icon: 'computer',
     w: 760,
     h: 480,
   })
@@ -71,7 +72,7 @@ function openTetris() {
     id: 'win:tetris',
     kind: 'tetris',
     title: 'TETRIS',
-    icon: '🎮',
+    icon: 'game',
     w: 400,
     h: 540,
   })
@@ -100,7 +101,7 @@ function syncPageWindow() {
       kind: 'page',
       title,
       path,
-      icon: '🌐',
+      icon: 'globe',
       w: 820,
       h: 560,
     })
@@ -156,11 +157,11 @@ watch(() => frontmatter.value.title, syncPageWindow)
     <!-- 桌面图标 -->
     <div class="xp-icons">
       <button class="xp-dicon" @dblclick="openTetris" @click="openTetris">
-        <span class="xp-dicon__img xp-dicon__img--game">🎮</span>
+        <XpIcon class="xp-dicon__img xp-dicon__img--game" name="game" :size="34" />
         <span class="xp-dicon__label">TETRIS</span>
       </button>
       <button class="xp-dicon" @dblclick="openMyComputer" @click="openMyComputer">
-        <span class="xp-dicon__img">🖥️</span>
+        <XpIcon class="xp-dicon__img" name="computer" :size="34" />
         <span class="xp-dicon__label">我的电脑</span>
       </button>
     </div>

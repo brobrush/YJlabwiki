@@ -98,7 +98,7 @@ export function openWindow(opts: {
   const win: XpWin = {
     id,
     title: opts.title,
-    icon: opts.icon ?? '📄',
+    icon: opts.icon ?? 'file',
     kind: opts.kind,
     path: opts.path,
     x: opts.x ?? pos.x,

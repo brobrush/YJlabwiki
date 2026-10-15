@@ -3,6 +3,7 @@
  * 底部任务栏：开始按钮 + 已打开窗口的按钮 + 右下角时钟
  */
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import XpIcon from './XpIcon.vue'
 import { focusWindow, toggleMinimize, topWindowId, windows } from './windows'
 
 defineProps<{ startOpen: boolean }>()
@@ -55,7 +56,7 @@ function clickWin(id: string, min: boolean) {
         :class="{ 'is-active': top === w.id && !w.min }"
         @click="clickWin(w.id, w.min)"
       >
-        <span class="xp-taskbtn__ico">{{ w.icon }}</span>
+        <XpIcon class="xp-taskbtn__ico" :name="w.icon" :size="16" />
         <span class="xp-taskbtn__text">{{ w.title }}</span>
       </button>
     </div>

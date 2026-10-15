@@ -6,6 +6,7 @@
  *       关闭、点击任意位置置顶、非活动时标题栏变灰。
  */
 import { computed, ref } from 'vue'
+import XpIcon from './XpIcon.vue'
 import {
   type XpWin,
   closeWindow,
@@ -125,7 +126,7 @@ function onCloseClick() {
     @mousedown="focusWindow(win.id)"
   >
     <div class="xp-win__title" @mousedown="startDrag" @dblclick="onTitleDblClick">
-      <span class="xp-win__icon">{{ win.icon }}</span>
+      <XpIcon class="xp-win__icon" :name="win.icon" :size="16" />
       <span class="xp-win__text">{{ win.title }}</span>
       <span class="xp-btns">
         <button class="xp-wbtn xp-wbtn--min" title="最小化" @click.stop="toggleMinimize(win.id)">
