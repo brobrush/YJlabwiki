@@ -3,11 +3,10 @@
  *
  * 状态放在模块级 reactive 数组里，所以路由跳转（SPA 内导航）不会把窗口弄没。
  *
- * 关于「页面窗口」的一个重要限制：
- *   VitePress 的 <Content /> 永远只渲染**当前路由**的内容，
- *   没法同时把两个不同路由的内容渲染到两个窗口里（除非去抓 HTML，那会丢掉交互）。
- *   所以页面窗口只有一个，换页面时是"在这个窗口里导航"，而不是再开一个。
- *   其余窗口（此电脑、TETRIS）可以随便开多个。
+ * 页面窗口：**每页一个**，id 形如 'page:<路由>'，所以能同时开很多个。
+ *   早年这里只允许开一个，因为窗口正文用的是 VitePress 的 <Content />，
+ *   而它只渲染当前路由；现在正文改成各自 fetch 静态 HTML，
+ *   见 xpPages.ts，限制就没有了。
  */
 import { reactive } from 'vue'
 
@@ -28,9 +27,6 @@ export interface XpWin {
   min: boolean
   max: boolean
 }
-
-/** 页面窗口的固定 id —— 全站只有一个 */
-export const PAGE_WIN_ID = 'win:page'
 
 export const windows = reactive<XpWin[]>([])
 

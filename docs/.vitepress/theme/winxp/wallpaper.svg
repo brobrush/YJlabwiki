@@ -1,75 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200"
-     preserveAspectRatio="xMidYMid slice" width="1600" height="1200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"
+     preserveAspectRatio="xMidYMid slice" width="1600" height="900">
   <!--
     XP 风格墙纸：蓝天 + 白云 + 平整绿丘。
 
-    这是本仓库自绘的 SVG，不是微软的「Bliss」原图 —— Bliss 是 Charles O'Rear
-    拍摄、版权归微软的商业素材，不能直接拿来用。这里只是用同样的构图语言
-    （干净的天空渐变 + 一条平滑的绿色山脊线）自己画一张。
+    这是本仓库自绘的 SVG，**不是**微软的「Bliss」原图 —— Bliss 是 Charles O'Rear
+    拍摄、版权归微软的商业素材。这里只借用同样的构图语言：
+    干净的天空渐变 + 一条平缓横贯画面的绿色山脊线。
 
-    用 preserveAspectRatio="slice" 让它像桌面壁纸一样铺满并裁切。
+    画布 16:9，配合 preserveAspectRatio="slice"，在常见屏幕上铺满时裁切最少。
+
+    ⚠️ 只画**一层**山丘。早先为了做层次叠了两三层硬边路径，
+    它们的斜边互相切割，草地上出现好几条直的色带，很难看 ——
+    纵深交给渐变本身去表达就够了。
   -->
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0f4f9e" />
-      <stop offset="0.28" stop-color="#2f7fd0" />
-      <stop offset="0.52" stop-color="#63a9e4" />
-      <stop offset="0.68" stop-color="#a9d2f2" />
-      <stop offset="0.74" stop-color="#d5eaf9" />
+      <stop offset="0" stop-color="#0d4a97" />
+      <stop offset="0.22" stop-color="#2a76c8" />
+      <stop offset="0.44" stop-color="#5aa2e0" />
+      <stop offset="0.58" stop-color="#94c8ee" />
+      <stop offset="0.67" stop-color="#cfe7f8" />
     </linearGradient>
 
-    <linearGradient id="hill" x1="0" y1="0" x2="0.25" y2="1">
-      <stop offset="0" stop-color="#9ada52" />
-      <stop offset="0.18" stop-color="#77c62f" />
-      <stop offset="0.55" stop-color="#4e9a12" />
-      <stop offset="1" stop-color="#2c5c07" />
+    <!-- 山丘：山脊处最亮（被阳光照着），往下逐渐转深 -->
+    <linearGradient id="hill" x1="0" y1="0" x2="0.08" y2="1">
+      <stop offset="0" stop-color="#aae060" />
+      <stop offset="0.10" stop-color="#88d13c" />
+      <stop offset="0.34" stop-color="#68bb25" />
+      <stop offset="0.62" stop-color="#4b9615" />
+      <stop offset="1" stop-color="#2f6609" />
     </linearGradient>
 
-    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#8fcf5a" />
-      <stop offset="1" stop-color="#5da81f" />
-    </linearGradient>
-
-    <filter id="cloudSoft" x="-40%" y="-120%" width="180%" height="340%">
-      <feGaussianBlur stdDeviation="22" />
+    <filter id="cloud" x="-40%" y="-140%" width="180%" height="380%">
+      <feGaussianBlur stdDeviation="20" />
     </filter>
-    <filter id="cloudSoft2" x="-40%" y="-120%" width="180%" height="340%">
-      <feGaussianBlur stdDeviation="14" />
+    <filter id="cloudTight" x="-40%" y="-140%" width="180%" height="380%">
+      <feGaussianBlur stdDeviation="11" />
     </filter>
   </defs>
 
   <!-- 天空 -->
-  <rect width="1600" height="1200" fill="url(#sky)" />
+  <rect width="1600" height="900" fill="url(#sky)" />
 
-  <!-- 云：几团模糊的白色椭圆，越靠下越淡 -->
-  <g filter="url(#cloudSoft)" fill="#ffffff">
-    <ellipse cx="250" cy="200" rx="250" ry="52" opacity="0.85" />
-    <ellipse cx="360" cy="228" rx="170" ry="34" opacity="0.7" />
-    <ellipse cx="1010" cy="130" rx="300" ry="58" opacity="0.9" />
-    <ellipse cx="1180" cy="168" rx="190" ry="36" opacity="0.65" />
-    <ellipse cx="1480" cy="300" rx="200" ry="46" opacity="0.7" />
-    <ellipse cx="640" cy="360" rx="220" ry="40" opacity="0.45" />
-    <ellipse cx="180" cy="430" rx="230" ry="38" opacity="0.32" />
-    <ellipse cx="1330" cy="470" rx="260" ry="40" opacity="0.28" />
+  <!-- 云 -->
+  <g filter="url(#cloud)" fill="#ffffff">
+    <ellipse cx="230" cy="150" rx="240" ry="46" opacity="0.88" />
+    <ellipse cx="345" cy="176" rx="160" ry="30" opacity="0.66" />
+    <ellipse cx="1010" cy="105" rx="300" ry="52" opacity="0.92" />
+    <ellipse cx="1175" cy="140" rx="185" ry="32" opacity="0.64" />
+    <ellipse cx="1465" cy="248" rx="190" ry="40" opacity="0.70" />
+    <ellipse cx="700" cy="300" rx="215" ry="36" opacity="0.46" />
+    <ellipse cx="180" cy="360" rx="225" ry="34" opacity="0.30" />
+    <ellipse cx="1300" cy="400" rx="250" ry="36" opacity="0.24" />
   </g>
-  <g filter="url(#cloudSoft2)" fill="#ffffff" opacity="0.5">
-    <ellipse cx="880" cy="250" rx="120" ry="26" />
-    <ellipse cx="430" cy="300" rx="110" ry="22" />
+  <g filter="url(#cloudTight)" fill="#ffffff" opacity="0.5">
+    <ellipse cx="880" cy="205" rx="115" ry="22" />
+    <ellipse cx="430" cy="245" rx="105" ry="19" />
   </g>
 
-  <!-- 远处一层更浅的绿，做出山丘的前后层次 -->
-  <path d="M0,905 C260,880 520,845 780,835 C1060,824 1340,848 1600,880 L1600,1200 L0,1200 Z"
-        fill="url(#hillFar)" opacity="0.75" />
-
-  <!-- 主山脊：从左侧平缓升起，向右上收拢，像 Bliss 那样的平滑曲线 -->
-  <path d="M0,982 C300,952 620,900 900,845 C1150,796 1380,742 1600,712 L1600,1200 L0,1200 Z"
+  <!-- 山丘：一条平缓的曲线，从左侧低处向右上升 -->
+  <path d="M0,662 C230,650 450,622 700,590 C980,554 1300,530 1600,524 L1600,900 L0,900 Z"
         fill="url(#hill)" />
 
-  <!-- 山脊高光：一条亮的草色描边 -->
-  <path d="M0,982 C300,952 620,900 900,845 C1150,796 1380,742 1600,712"
-        fill="none" stroke="#b6e86a" stroke-width="6" opacity="0.5" />
-
-  <!-- 近景压暗一点，增加纵深 -->
-  <path d="M0,1060 C400,1030 900,1010 1600,1005 L1600,1200 L0,1200 Z"
-        fill="#1f4504" opacity="0.35" />
+  <!-- 山脊高光：贴着山脊的一道亮草色，让坡面有被照亮的感觉 -->
+  <path d="M0,662 C230,650 450,622 700,590 C980,554 1300,530 1600,524"
+        fill="none" stroke="#c9f185" stroke-width="6" opacity="0.35" />
+  <path d="M0,676 C230,664 450,637 700,606 C980,571 1300,548 1600,542"
+        fill="none" stroke="#ffffff" stroke-width="14" opacity="0.07" />
 </svg>

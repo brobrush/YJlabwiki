@@ -22,6 +22,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DIST = ROOT / 'docs' / '.vitepress' / 'dist'
 PREVIEW = ROOT / '.preview'
 PORT = os.environ.get('XP_PORT', '4220')
+# 部署用的 base 前缀。设成 /YJlabwiki/ 就能在本地复现子路径部署，
+# 很多「本地好、线上坏」的 bug（比如路由没带 base）只有这样才测得出来。
+BASE = os.environ.get('XP_BASE', '')
 
 SEED = '<script>try{localStorage.setItem("yjlab-wiki-theme","winxp")}catch(e){}</script>'
 DELAY_MS = os.environ.get('XP_DELAY', '2000')
@@ -53,7 +56,10 @@ def main():
         sys.exit(1)
 
     # 先重建，避免上一次注入残留在同一个 HTML 里累加
-    subprocess.run(['npm', 'run', 'build'], cwd=ROOT, capture_output=True)
+    env = dict(os.environ)
+    if BASE:
+        env['BASE_PATH'] = BASE
+    subprocess.run(['npm', 'run', 'build'], cwd=ROOT, capture_output=True, env=env)
 
     html = target.read_text(encoding='utf-8')
     injected = SEED
@@ -71,7 +77,7 @@ def main():
     out.unlink(missing_ok=True)
     profile = PREVIEW / 'ffprof'
     profile.mkdir(exist_ok=True)
-    url = f'http://127.0.0.1:{PORT}{route}'
+    url = 'http://127.0.0.1:%s%s%s' % (PORT, BASE.rstrip('/'), route)
     subprocess.run(
         ['timeout', '150', 'firefox', '--headless', '--profile', str(profile),
          '--window-size=1280,800', '--screenshot', str(out), url],

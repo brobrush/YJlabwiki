@@ -17,7 +17,7 @@ import {
   topWindowId,
 } from './windows'
 
-const props = defineProps<{ win: XpWin; onClose?: (id: string) => void }>()
+const props = defineProps<{ win: XpWin }>()
 
 const isActive = computed(() => topWindowId() === props.win.id)
 
@@ -113,8 +113,7 @@ function onTitleDblClick() {
 }
 
 function onCloseClick() {
-  if (props.onClose) props.onClose(props.win.id)
-  else closeWindow(props.win.id)
+  closeWindow(props.win.id)
 }
 </script>
 

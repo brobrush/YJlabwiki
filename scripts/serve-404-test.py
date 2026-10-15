@@ -19,6 +19,11 @@ ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                     'docs', '.vitepress', 'dist')
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 4190
 
+# 模拟部署在子路径下的情况，例如 SERVE_BASE=/YJlabwiki
+# 设了它，请求 /YJlabwiki/foo 就会被当成 /foo 去 dist 里找 —— 和 GitHub Pages
+# 在项目站点下的行为一致。验证 base 相关的 bug（比如 router.go 忘了带 base）必须用它。
+SERVE_BASE = os.environ.get('SERVE_BASE', '').rstrip('/')
+
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
@@ -43,6 +48,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return
         # 去掉查询串再解析路径
         raw = self.path.split('?', 1)[0].split('#', 1)[0]
+        if SERVE_BASE and raw.startswith(SERVE_BASE):
+            raw = raw[len(SERVE_BASE):] or '/'
+            self.path = raw
         target = self.translate_path(raw)
         if os.path.isdir(target):
             target = os.path.join(target, 'index.html')

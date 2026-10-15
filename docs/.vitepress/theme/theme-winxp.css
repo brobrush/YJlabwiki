@@ -315,6 +315,19 @@ html[data-wiki-theme='winxp'] .xp-ico {
   padding: 14px 18px 26px;
 }
 
+/* 窗口正文抓取过程的占位 */
+.xp-page__note,
+.xp-page__empty {
+  margin: 18px 4px;
+  color: #666;
+  font-size: 13px;
+}
+
+/* 抓来的正文里的链接沿用维基配色 */
+.xp-page__body a {
+  color: #0645ad;
+}
+
 /* XP 模式里不该出现维基那套底部版权栏 */
 .xp-page .wiki-footer {
   display: none;

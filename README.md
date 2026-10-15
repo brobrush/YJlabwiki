@@ -82,18 +82,38 @@ npm run build    # 产物在 docs/.vitepress/dist/
 | `XpTetris.vue` | 可以玩的俄罗斯方块 |
 | `theme-winxp.css` | Luna 配色、CSS 合成的「Bliss」墙纸 |
 
-**两个必须知道的实现约束：**
+**页面正文是怎么来的：** 不用 VitePress 的 `<Content />`（它只渲染**当前路由**，
+一个窗口都嫌多），而是每个窗口各自 `fetch` 那一页已经预渲染好的 HTML，
+把 `.wiki-body` 抓出来塞进窗口 —— 见 `winxp/xpPages.ts`。
+所以**每个页面一个窗口，可以同时开任意多个**，互不干扰。
+代价是抓来的是静态快照，里面的 Vue 交互组件不活；网页里的链接由
+`XpDesktop.vue` 的事件委托接管，所以点击跳转照常能用。
 
-1. **页面窗口只有一个。** VitePress 的 `<Content />` 永远只渲染**当前路由**，
-   没法同时把两个路由的内容放进两个窗口。所以「打开页面」是在同一个窗口里导航。
-2. **首次进入 XP 模式时必须再走一次路由**（见 `XpDesktop.vue` 的 `onMounted`）。
-   VitePress 首次加载用的是页面的 `.lean.js` 版组件 —— 它只含动态部分，静态正文靠
-   SSR 出来的 DOM 补全；而 XP 模式会把那层 DOM 换成桌面，lean 组件就渲染不出正文了。
-   再调一次 `router.go(location.href)` 就会加载完整版组件（地址不变，不污染历史）。
+**⚠️ XP 主题最容易踩的坑：base 前缀。** 这个站部署在 `/YJlabwiki/` 子路径下，
+而 VitePress 内部是**按长度剥 base** 的：
 
-改完 XP 主题想截图验证的话，用 `python3 scripts/xp-shot.py <路由> <输出名> [要执行的JS]`：
-它会注入主题种子和一张慢加载图（把 `load` 拖后，好让无头浏览器拍到客户端渲染结果），
-也可以注入 JS 模拟点击。跑完记得 `npm run build` 把注入清掉。
+```js
+pagePath = sanitizeFileName(pagePath.slice(base.length).replace(/\//g, '_')) + '.md'
+```
+
+所以 `router.go()` 必须传 `withBase(path)` 的**带前缀**地址 —— 传 `/chronicle/gen-1`
+会被 `slice(11)` 切成 `ronicle/gen-1`，然后整站显示「页面不存在」。
+另外 `useRoute().path` **本身就已经带 base**，拿它当应用路径用之前必须先
+`stripBase()` 剥掉，否则会拼成 `/YJlabwiki/YJlabwiki/...` 而 404，
+而且窗口 id 会一个带 base 一个不带，同一个页面开出两个窗口。
+
+这一类 bug 本地开发时**测不出来**（本地 base 是 `/`，`withBase` 是空操作），
+必须用子路径构建来验证：
+
+```bash
+BASE_PATH=/YJlabwiki/ npm run build
+SERVE_BASE=/YJlabwiki python3 scripts/serve-404-test.py 4231
+XP_BASE=/YJlabwiki/ python3 scripts/xp-shot.py <路由> <输出名> [要执行的JS]
+```
+
+`scripts/xp-shot.py` 会注入主题种子和一张慢加载图（把 `load` 拖后，好让无头浏览器
+拍到客户端渲染结果），也可以注入 JS 模拟点击；`XP_DELAY` 控制慢图延时。
+跑完记得 `npm run build` 把注入清掉（dist 本来就在 `.gitignore` 里）。
 
 ## 改代码前必读
 

@@ -12,31 +12,29 @@
  *   │ [开始] │ 窗口按钮…            │  🔊 🖧 12:34 │
  *   └────────────────────────────────────────────┘
  *
- * 页面内容的呈现方式：VitePress 的 <Content /> 只会渲染**当前路由**，
- * 所以"打开页面的窗口"只有一个 —— 换页面等于在这个窗口里导航。
- * 详见 windows.ts 顶部说明。
+ * 页面窗口的正文来自 xpPages.ts（各自 fetch 静态 HTML），
+ * 所以**多个页面窗口可以同时开着**，互不干扰。
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useData, useRoute, useRouter } from 'vitepress'
+import { useData, useRoute } from 'vitepress'
 import {
-  PAGE_WIN_ID,
-  closeWindow,
   desktopSize,
   openWindow,
   topWindowId,
   windows,
+  type XpWin,
 } from './windows'
 import { useWikiTheme } from '../themes'
+import { cachedPage, hrefToPath, loadPage, stripBase } from './xpPages'
+import { useXpOpenPage } from './openPage'
 import XpIcon from './XpIcon.vue'
 import XpWindow from './XpWindow.vue'
 import XpTaskbar from './XpTaskbar.vue'
 import XpStartMenu from './XpStartMenu.vue'
 import XpMyComputer from './XpMyComputer.vue'
 import XpTetris from './XpTetris.vue'
-import { useXpOpenPage } from './openPage'
 
 const route = useRoute()
-const router = useRouter()
 const { page, frontmatter } = useData()
 const { setTheme } = useWikiTheme()
 const openPage = useXpOpenPage()
@@ -78,40 +76,67 @@ function openTetris() {
   })
 }
 
-/* -------------------------------------------------- 页面窗口同步 */
+/* -------------------------------------------------- 与路由同步
+ *
+ * 只负责"路由指向某页时，那个页面的窗口得存在"。
+ * 不做置顶（不然每次跳转都会把窗口拽到最前面，很烦），
+ * 关闭窗口时也不改路由 —— 免得点个叉就把当前地址跳走。
+ */
 
-function syncPageWindow() {
-  const path = route.path
-  // 根路径 = 桌面，没有页面窗口
-  if (path === '/' || path === '' || path === '/index.html') {
-    closeWindow(PAGE_WIN_ID)
-    return
-  }
+function ensurePageWindow() {
+  // route.path 带 base，必须先剥掉再当应用路径用
+  const path = stripBase(route.path || '/')
+  if (path === '/') return
 
   const title =
     (frontmatter.value.title as string) || page.value.title || path.replace(/^\//, '')
 
-  const ex = windows.find((w) => w.id === PAGE_WIN_ID)
-  if (ex) {
-    ex.title = title
-    ex.path = path
-  } else {
+  if (!windows.find((w) => w.id === 'page:' + path)) {
     openWindow({
-      id: PAGE_WIN_ID,
+      id: 'page:' + path,
       kind: 'page',
-      title,
       path,
+      title,
       icon: 'globe',
       w: 820,
       h: 560,
     })
   }
+  loadPage(path, title)
 }
 
-/** 关闭窗口：页面窗口关掉时回到桌面 */
-function closeWin(id: string) {
-  closeWindow(id)
-  if (id === PAGE_WIN_ID) router.go('/')
+/* -------------------------------------------------- 页面窗口正文 */
+
+function pageHtml(path: string | undefined) {
+  if (!path) return ''
+  const p = cachedPage(path)
+  if (!p || p.state === 'loading') return '<p class="xp-page__note">载入中…</p>'
+  return p.html
+}
+
+/**
+ * 事件委托：抓来的正文是静态快照，里面的 <a> 不会自己走 SPA 路由，
+ * 所以在这里统一接管 —— 站内链接开/聚焦对应窗口，外链和锚点放行。
+ */
+function onPageClick(e: MouseEvent) {
+  const a = (e.target as HTMLElement | null)?.closest?.('a')
+  if (!a) return
+
+  const raw = a.getAttribute('href') || ''
+
+  // 页内锚点：在窗口里滚过去，不要动整个文档
+  if (raw.startsWith('#')) {
+    e.preventDefault()
+    const box = (e.currentTarget as HTMLElement).querySelector(raw)
+    box?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return
+  }
+
+  const path = hrefToPath(raw)
+  if (path === null) return // 外链，交给浏览器
+
+  e.preventDefault()
+  openPage(path, a.textContent?.trim() || undefined)
 }
 
 /* -------------------------------------------------- 生命周期 */
@@ -119,24 +144,8 @@ function closeWin(id: string) {
 onMounted(() => {
   measure()
   window.addEventListener('resize', measure)
-  syncPageWindow()
-  // 点桌面空白处收起开始菜单
+  ensurePageWindow()
   document.addEventListener('click', onDocClick)
-
-  /*
-   * ⚠️ 这一句必须留着，否则「直接刷新某个内容页」时窗口里是空白。
-   *
-   * VitePress 首次加载用的是页面的 **.lean.js** 版本 —— 它只包含动态部分，
-   * 静态正文靠 SSR 已经吐出来的 DOM 补全（hydration）。
-   * 而 XP 模式会把那层 DOM 整个换成桌面，lean 组件就渲染不出任何东西了。
-   *
-   * 解决办法：再走一次路由。VitePress 内部 isInitialPageLoad 在第一次
-   * loadPage 之后就置为 false，所以这一次会加载**完整版**组件。
-   * 目标地址与当前完全相同，不会多出历史记录。
-   */
-  if (route.path && route.path !== '/') {
-    router.go(window.location.href)
-  }
 })
 
 onBeforeUnmount(() => {
@@ -148,43 +157,40 @@ function onDocClick() {
   startOpen.value = false
 }
 
-watch(() => route.path, syncPageWindow)
-watch(() => frontmatter.value.title, syncPageWindow)
+watch(() => route.path, ensurePageWindow)
+watch(() => frontmatter.value.title, ensurePageWindow)
 </script>
 
 <template>
   <div ref="root" class="xp-desktop" @click="startOpen = false">
     <!-- 桌面图标 -->
     <div class="xp-icons">
-      <button class="xp-dicon" @dblclick="openTetris" @click="openTetris">
+      <button class="xp-dicon" @click="openTetris">
         <XpIcon class="xp-dicon__img xp-dicon__img--game" name="game" :size="34" />
         <span class="xp-dicon__label">TETRIS</span>
       </button>
-      <button class="xp-dicon" @dblclick="openMyComputer" @click="openMyComputer">
+      <button class="xp-dicon" @click="openMyComputer">
         <XpIcon class="xp-dicon__img" name="computer" :size="34" />
         <span class="xp-dicon__label">我的电脑</span>
       </button>
     </div>
 
-    <!-- 桌面上的一个小提示牌，告诉人开始菜单在哪 -->
+    <!-- 桌面上的小提示牌 -->
     <div class="xp-hint" @click.stop>
       <b>欢迎使用 YJlab 维基</b>
       <span>侧栏、所有页面和切换主题都在左下角的「开始」里。</span>
     </div>
 
     <!-- 窗口层 -->
-    <XpWindow
-      v-for="w in windows"
-      :key="w.id"
-      :win="w"
-      :on-close="closeWin"
-    >
+    <XpWindow v-for="w in windows" :key="w.id" :win="w">
       <XpMyComputer v-if="w.kind === 'mycomputer'" />
       <XpTetris v-else-if="w.kind === 'tetris'" :active="topId === w.id" />
       <div v-else class="xp-page">
-        <div class="wiki-body xp-page__body">
-          <Content />
-        </div>
+        <div
+          class="wiki-body xp-page__body"
+          @click="onPageClick"
+          v-html="pageHtml(w.path)"
+        />
       </div>
     </XpWindow>
 
@@ -192,9 +198,6 @@ watch(() => frontmatter.value.title, syncPageWindow)
     <XpStartMenu v-if="startOpen" @close="startOpen = false" />
 
     <!-- 任务栏 -->
-    <XpTaskbar
-      :start-open="startOpen"
-      @toggle-start="startOpen = !startOpen"
-    />
+    <XpTaskbar :start-open="startOpen" @toggle-start="startOpen = !startOpen" />
   </div>
 </template>
