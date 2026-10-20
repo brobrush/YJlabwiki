@@ -19,6 +19,9 @@ categories:
 | [第一世代 · 猴王初问世](/chronicle/gen-1) | 待补充 | 从零起步 | 待补充 |
 | [第二世代 · shit ocean](/chronicle/gen-2) | 待补充 | 方向收敛 | 待补充 |
 | [第三世代 · 注定伟大](/chronicle/gen-3) | 待补充 | 进化？！ | 进行中 |
+| [第四世代 · 改换新门面](/chronicle/gen-4) | 待补充 | 改换新门面 | 待补充 |
+| [第五世代 · deep dark fantasy](/chronicle/gen-5) | 待补充 | deep dark fantasy | 待补充 |
+| [第六世代 · 登神长阶！](/chronicle/gen-6) | 待补充 | 登神长阶！ | 待补充 |
 
 ## 如何撰写世代条目
 
