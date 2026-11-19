@@ -23,7 +23,7 @@ categories:
 :::
 
 - **[世代编年史总览](/chronicle/)** —— 一页看清全部世代
-- [第一世代 · 猴王初问世](/chronicle/gen-1)
+- [第一世代 · 候王初问世](/chronicle/gen-1)
 - [第二世代 · shit ocean](/chronicle/gen-2)
 - [第三世代 · 注定伟大](/chronicle/gen-3)
 - [大事记](/chronicle/timeline) —— 逐年时间轴
